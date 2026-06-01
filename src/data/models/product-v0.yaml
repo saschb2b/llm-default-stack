@@ -1,0 +1,23 @@
+vendor: Vercel
+family: v0
+kind: product
+url: https://v0.dev
+order: 10
+blurb: >-
+  Vercel's generative-UI product — the purest expression of the default stack,
+  because Vercel ships most of it (Next.js, shadcn/ui, the deploy target).
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  stateData:
+    - name: TanStack Query
+  backend:
+    - name: Vercel
+    - name: Supabase
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

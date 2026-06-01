@@ -1,0 +1,40 @@
+vendor: Google
+family: Gemini
+kind: model
+url: https://gemini.google.com
+order: 3
+blurb: >-
+  Gemini is the notable Vite holdout among the big closed models, and the one
+  most likely to wire up Google's own backend (Firebase) by default.
+defaultStack:
+  framework:
+    - name: Vite
+  styling:
+    - name: Tailwind
+  components:
+    - name: Mixed
+      note: matches the project's conventions
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Firebase
+    - name: Node.js
+versions:
+  - name: Gemini 3.5 Flash
+    releaseDate: '2026-05'
+    status: current
+  - name: Gemini 3.5 Pro
+    status: preview
+    notes: In testing at the time of writing.
+  - name: Gemini 3.1 Pro
+    releaseDate: '2026-02-19'
+    status: previous
+  - name: Gemini 3 Flash
+    releaseDate: '2026'
+    status: previous
+  - name: Gemini 2.5 Pro
+    releaseDate: '2025-03'
+    status: legacy
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

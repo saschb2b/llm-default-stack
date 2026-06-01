@@ -1,0 +1,38 @@
+vendor: Alibaba
+family: Qwen Coder
+kind: model
+url: https://github.com/QwenLM/Qwen3-Coder
+order: 6
+blurb: >-
+  Alibaba's open-weight coding line tracks DeepSeek almost exactly — the full
+  Next.js + shadcn/ui + TanStack Query stack, from open weights.
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  stateData:
+    - name: TanStack Query
+  backend:
+    - name: Flexible
+versions:
+  - name: Qwen 3.7 Max
+    releaseDate: '2026-05-20'
+    status: current
+    notes: Closed-weight flagship, accessible via Alibaba Cloud DashScope.
+  - name: Qwen3.6-27B
+    releaseDate: '2026-04-22'
+    status: previous
+    notes: Latest open-weight dense coding model.
+  - name: Qwen3-Coder
+    releaseDate: '2025-07'
+    status: previous
+    notes: 480B-A35B and 30B-A3B agentic coding models.
+  - name: Qwen2.5-Coder
+    releaseDate: '2024-11'
+    status: legacy
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

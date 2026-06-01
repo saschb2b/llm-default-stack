@@ -1,0 +1,42 @@
+vendor: OpenAI
+family: GPT / Codex
+kind: model
+url: https://openai.com
+order: 2
+blurb: >-
+  GPT and the Codex coding line lean Next.js but, more than any other family,
+  mirror whatever the project already uses rather than imposing a default.
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+    - name: Plain CSS
+      note: when the project already uses it
+  components:
+    - name: Mixed
+      note: matches the project's conventions
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Flexible
+versions:
+  - name: GPT-5.5
+    releaseDate: '2026-05'
+    status: current
+  - name: GPT-5.3-Codex
+    releaseDate: '2026'
+    status: previous
+    notes: Agentic coding model combining the Codex and GPT-5 training stacks.
+  - name: GPT-5.2 / GPT-5.2-Codex
+    releaseDate: '2026'
+    status: previous
+  - name: GPT-5
+    releaseDate: '2025-08'
+    status: previous
+  - name: GPT-4o
+    releaseDate: '2024-05'
+    status: legacy
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

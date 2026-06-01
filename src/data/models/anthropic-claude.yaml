@@ -1,0 +1,44 @@
+vendor: Anthropic
+family: Claude
+kind: model
+url: https://www.anthropic.com/claude
+order: 1
+blurb: >-
+  Anthropic's model line reaches for the Vercel-flavoured React stack and is one
+  of the heaviest shadcn/ui users — the only family to routinely add Zustand on
+  top of TanStack Query.
+defaultStack:
+  framework:
+    - name: Next.js
+    - name: Vite
+      note: for lighter, SPA-style apps
+  styling:
+    - name: Tailwind
+      note: v4
+  components:
+    - name: shadcn/ui
+  stateData:
+    - name: Zustand
+    - name: TanStack Query
+  backend:
+    - name: Vercel
+    - name: Supabase
+versions:
+  - name: Claude Opus 4.8
+    releaseDate: '2026-05-28'
+    status: current
+  - name: Claude Sonnet 4.6
+    releaseDate: '2026-02-17'
+    status: previous
+  - name: Claude Sonnet 4.5
+    releaseDate: '2025-09'
+    status: previous
+  - name: Claude 3.7 Sonnet
+    releaseDate: '2025-02'
+    status: legacy
+  - name: Claude 3.5 Sonnet
+    releaseDate: '2024-06'
+    status: legacy
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

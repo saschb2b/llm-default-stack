@@ -1,0 +1,24 @@
+vendor: StackBlitz
+family: Bolt
+kind: product
+url: https://bolt.new
+order: 12
+blurb: >-
+  In-browser full-stack generator. The framework genuinely varies with the
+  prompt, but Tailwind and Supabase stay constant underneath.
+defaultStack:
+  framework:
+    - name: Varies
+      note: depends on the prompt
+  styling:
+    - name: Tailwind
+  components:
+    - name: Mixed
+      note: matches the project's conventions
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Supabase
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

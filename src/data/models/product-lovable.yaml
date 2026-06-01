@@ -1,0 +1,22 @@
+vendor: Lovable
+family: Lovable
+kind: product
+url: https://lovable.dev
+order: 11
+blurb: >-
+  Full-app generator that breaks from the pack on one axis — it defaults to Vite
+  rather than Next.js — while keeping Tailwind, shadcn/ui and Supabase.
+defaultStack:
+  framework:
+    - name: Vite
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  stateData:
+    - name: TanStack Query
+  backend:
+    - name: Supabase
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack

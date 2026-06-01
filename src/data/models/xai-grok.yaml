@@ -1,0 +1,39 @@
+vendor: xAI
+family: Grok
+kind: model
+url: https://x.ai
+order: 4
+blurb: >-
+  Grok lands squarely in the consensus: Next.js + Tailwind, and otherwise mirror
+  the project. Little that distinguishes its output from the pack.
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+  components:
+    - name: Mixed
+      note: matches the project's conventions
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Flexible
+versions:
+  - name: Grok 4.20
+    releaseDate: '2026-05-01'
+    status: current
+    notes: Top-tier model with a 2M-token context window.
+  - name: Grok 4.3
+    releaseDate: '2026-04-30'
+    status: previous
+    notes: Recommended general-purpose API alias.
+  - name: Grok Build 0.1
+    releaseDate: '2026-05'
+    status: preview
+    notes: Terminal-native coding agent, public beta.
+  - name: Grok 4
+    releaseDate: '2025-07'
+    status: legacy
+sources:
+  - label: Six Models, One React Stack
+    url: https://www.saschb2b.com/blog/llm-default-react-stack
