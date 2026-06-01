@@ -1,0 +1,73 @@
+---
+title: The convergence
+description: Why every coding model reaches for the same React stack — token economics, shadcn/ui's open-code model, and the training-data flywheel.
+---
+
+import { Aside, CardGrid, Card } from '@astrojs/starlight/components';
+
+Open three chat tabs — Claude, GPT, Gemini — and give each the same bare prompt:
+*"build me a todo app,"* nothing else. Then diff the three `package.json` files.
+They rhyme. Run the same test across nine families and the
+[explorer's matrix](../../explorer/) makes the shape obvious at a glance.
+
+<Aside type="tip" title="This is the companion to an article">
+	The data and argument here come from
+	[**Six Models, One React Stack**](https://www.saschb2b.com/blog/llm-default-react-stack).
+	This site is the interactive version — read the article for the full case.
+</Aside>
+
+## The shape of the agreement
+
+The columns don't all converge equally, and that's the interesting part:
+
+- **Styling is a single answer.** Every family defaults to Tailwind. The strongest
+  signal in the whole dataset.
+- **Components are mostly one answer.** Where a model commits to a library at all,
+  it's shadcn/ui. The rest "mirror the project" rather than picking a rival.
+- **The framework wobbles.** Next.js leads, but Vite holds a real minority
+  (Gemini, Lovable, and Claude for lighter apps).
+- **The backend scatters.** This is where defaults diverge most — Supabase,
+  Vercel, Firebase, or simply "whatever fits."
+
+So the monoculture isn't total. It's concentrated in the layers closest to the
+code the model writes character by character.
+
+## Why it happens
+
+<CardGrid>
+	<Card title="Token economics" icon="rocket">
+		Tailwind's atomic utility classes are cheap to emit — short, predictable
+		tokens inline in the markup — where CSS-in-JS or separate stylesheets cost
+		more tokens and more round-trips. The cheapest correct answer wins by default.
+	</Card>
+	<Card title="Open code, not an API" icon="seti:react">
+		shadcn/ui ships components as source you copy in, not an opaque package with
+		an API to memorize. That maps perfectly onto how a model generates — it would
+		rather write the component than import one it has to recall the surface of.
+	</Card>
+	<Card title="The training flywheel" icon="approve-check">
+		Popular code becomes training data becomes the next model's default becomes
+		more popular code. Each turn of the wheel tightens the consensus, regardless
+		of whether the alternatives got worse.
+	</Card>
+</CardGrid>
+
+## The cost
+
+The flywheel has two side effects worth naming:
+
+1. **Permanent version lag.** Models default to the library versions that dominated
+   their training data, not the latest release. The default is always slightly
+   behind — and the lag is structural, not a bug that gets fixed.
+2. **Alternatives fall out of view.** Frameworks outside the consensus don't lose on
+   quality; they lose on *visibility*. If the model never reaches for them, most
+   people scaffolding with a model never see them.
+
+None of this means the default stack is wrong — it's a genuinely good stack. The
+point is that "good" and "the only thing you're shown" are different properties,
+and the gap between them is widening.
+
+<Aside>
+	Think a default is wrong, out of date, or missing a model? The data is a few
+	lines of YAML — see [Methodology & contributing](../methodology/).
+</Aside>

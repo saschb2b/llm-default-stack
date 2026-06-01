@@ -30,7 +30,16 @@ export default defineConfig({
 			editLink: {
 				baseUrl: 'https://github.com/saschb2b/llm-default-stack/edit/main/',
 			},
-			sidebar: [{ label: 'Explorer', link: '/explorer/' }],
+			sidebar: [
+				{ label: 'Explorer', link: '/explorer/' },
+				{
+					label: 'About',
+					items: [
+						{ label: 'The convergence', slug: 'about/convergence' },
+						{ label: 'Methodology & contributing', slug: 'about/methodology' },
+					],
+				},
+			],
 		}),
 	],
 });
