@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "description": "An interactive explorer for the default tech stack each LLM reaches for when scaffolding a React app.",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

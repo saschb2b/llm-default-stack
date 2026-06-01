@@ -25,9 +25,20 @@ pnpm preview  # preview the production build locally
 
 ## Deploy
 
-The site is published to GitHub Pages. `astro.config.mjs` is configured for the project
-site at `https://saschb2b.github.io/llm-default-stack/` via `site` + `base`. If you move
-it to a custom domain, update those two constants.
+The site ships to GitHub Pages via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+(the official `withastro/action`), which builds and publishes on every push to `main`.
+One-time setup: in the repo's **Settings → Pages → Build and deployment**, set **Source**
+to **GitHub Actions**.
+
+`astro.config.mjs` is configured for the project site at
+`https://saschb2b.github.io/llm-default-stack/` via `site` + `base`. If you move it to a
+custom domain, update those two constants (internal links are relative, so they follow).
+
+## Adding a model
+
+Each model family is one YAML file in [`src/data/models/`](src/data/models), validated by
+the schema in `src/content.config.ts`. See the **Methodology & contributing** page for the
+exact shape.
 
 ## License
 
