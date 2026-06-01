@@ -1,0 +1,783 @@
+---
+import {
+	getModels,
+	resolveStack,
+	tallyDimension,
+	DIMENSIONS,
+	STATUS_LABEL,
+	type Version,
+} from '../lib/models';
+
+const models = await getModels();
+const total = models.length;
+
+const tallies = DIMENSIONS.map((d) => {
+	const all = tallyDimension(models, d.key);
+	return { ...d, top: all[0], all };
+});
+
+// A synthetic single "version" for families (products) that don't list any.
+function versionsOf(m: (typeof models)[number]): Version[] {
+	if (m.data.versions.length) return m.data.versions;
+	return [{ name: m.data.family, status: 'current', sources: [] } as Version];
+}
+
+// Per-family, per-version resolved stacks, embedded for client-side version
+// switching. Most versions inherit the family default; overrides flow through
+// resolveStack().
+const explorerData = Object.fromEntries(
+	models.map((m) => [
+		m.id,
+		versionsOf(m).map((v) => ({
+			name: v.name,
+			date: v.releaseDate ?? null,
+			status: v.status ?? 'current',
+			notes: v.notes ?? null,
+			stack: resolveStack(m, m.data.versions.length ? v : undefined),
+		})),
+	]),
+);
+const explorerJson = JSON.stringify(explorerData).replace(/</g, '\\u003c');
+
+function haystack(m: (typeof models)[number]): string {
+	return [
+		m.data.vendor,
+		m.data.family,
+		m.data.kind,
+		...versionsOf(m).map((v) => v.name),
+	]
+		.join(' ')
+		.toLowerCase();
+}
+
+function choiceList(m: (typeof models)[number]): string {
+	const names = new Set<string>();
+	for (const { key } of DIMENSIONS)
+		for (const c of m.data.defaultStack[key] ?? []) names.add(c.name);
+	return [...names].join('|');
+}
+---
+
+<div class="explorer" data-explorer>
+	<!-- Convergence headline -->
+	<ul class="convergence" aria-label="Where the columns converge">
+		{
+			tallies.map((t) => (
+				<li>
+					<span class="dim-label">{t.label}</span>
+					<span class="lead">{t.top?.name ?? '—'}</span>
+					<span class="bar" aria-hidden="true">
+						<span
+							class="bar-fill"
+							style={`width:${Math.round((t.top?.share ?? 0) * 100)}%`}
+						/>
+					</span>
+					<span class="frac">
+						{t.top?.count ?? 0}/{total} families
+					</span>
+				</li>
+			))
+		}
+	</ul>
+
+	<!-- Controls -->
+	<div class="controls">
+		<input
+			type="search"
+			class="search"
+			placeholder="Search models, vendors, versions…"
+			aria-label="Search models"
+			data-search
+		/>
+		<div class="seg" role="group" aria-label="Filter by kind" data-kind>
+			<button type="button" data-kind-btn="all" class="active">All</button>
+			<button type="button" data-kind-btn="model">Models</button>
+			<button type="button" data-kind-btn="product">Products</button>
+		</div>
+		<div class="seg" role="group" aria-label="View" data-view>
+			<button type="button" data-view-btn="cards" class="active">Cards</button>
+			<button type="button" data-view-btn="matrix">Matrix</button>
+		</div>
+	</div>
+
+	<div class="active-filter" data-active-filter hidden>
+		Filtering by <strong data-filter-label></strong>
+		<button type="button" class="clear" data-clear-filter>clear ✕</button>
+	</div>
+
+	<!-- Cards view -->
+	<div class="cards" data-cards>
+		{
+			models.map((m) => {
+				const versions = versionsOf(m);
+				const v0 = versions[0];
+				const stack = resolveStack(m, m.data.versions.length ? v0 : undefined);
+				return (
+					<article
+						class="card"
+						data-card
+						data-kind={m.data.kind}
+						data-haystack={haystack(m)}
+						data-choices={choiceList(m)}
+						data-id={m.id}
+					>
+						<header class="card-head">
+							<div class="title">
+								<span class="vendor">{m.data.vendor}</span>
+								<h3>
+									{m.data.url ? (
+										<a href={m.data.url} target="_blank" rel="noopener">
+											{m.data.family}
+										</a>
+									) : (
+										m.data.family
+									)}
+								</h3>
+							</div>
+							<span class={`kind kind-${m.data.kind}`}>
+								{m.data.kind === 'product' ? 'Product' : 'Model'}
+							</span>
+						</header>
+
+						{m.data.blurb && <p class="blurb">{m.data.blurb}</p>}
+
+						<div class="version-row">
+							{versions.length > 1 ? (
+								<label class="version-pick">
+									<span>Version</span>
+									<select data-version aria-label={`${m.data.family} version`}>
+										{versions.map((v, i) => (
+											<option value={i}>{v.name}</option>
+										))}
+									</select>
+								</label>
+							) : (
+								<span class="version-single">{v0.name}</span>
+							)}
+							<span class="version-meta" data-version-meta>
+								<span class={`status status-${v0.status}`}>
+									{STATUS_LABEL[v0.status]}
+								</span>
+								{v0.releaseDate && <span class="date">{v0.releaseDate}</span>}
+							</span>
+						</div>
+						<p class="version-notes" data-version-notes hidden={!v0.notes}>
+							{v0.notes}
+						</p>
+
+						<dl class="dims">
+							{DIMENSIONS.map((d) => (
+								<div class="dim">
+									<dt>{d.label}</dt>
+									<dd data-dim={d.key}>
+										{stack[d.key].map((c) => (
+											<button
+												type="button"
+												class="chip"
+												data-choice={c.name}
+												title={`Filter by ${c.name}`}
+											>
+												{c.name}
+												{c.note && <em class="chip-note">{c.note}</em>}
+											</button>
+										))}
+									</dd>
+								</div>
+							))}
+						</dl>
+
+						{m.data.sources.length > 0 && (
+							<footer class="card-foot">
+								<span>Source:</span>
+								{m.data.sources.map((s) =>
+									s.url ? (
+										<a href={s.url} target="_blank" rel="noopener">
+											{s.label}
+										</a>
+									) : (
+										<span>{s.label}</span>
+									),
+								)}
+							</footer>
+						)}
+					</article>
+				);
+			})
+		}
+	</div>
+
+	<!-- Matrix view -->
+	<div class="matrix-wrap" data-matrix hidden>
+		<table class="matrix">
+			<thead>
+				<tr>
+					<th scope="col">Model</th>
+					{DIMENSIONS.map((d) => <th scope="col">{d.label}</th>)}
+				</tr>
+			</thead>
+			<tbody>
+				{
+					models.map((m) => {
+						const stack = resolveStack(m);
+						return (
+							<tr
+								data-row
+								data-kind={m.data.kind}
+								data-haystack={haystack(m)}
+								data-choices={choiceList(m)}
+							>
+								<th scope="row">
+									<span class="vendor">{m.data.vendor}</span>
+									{m.data.family}
+								</th>
+								{DIMENSIONS.map((d) => (
+									<td>
+										{stack[d.key].map((c) => (
+											<button type="button" class="chip" data-choice={c.name}>
+												{c.name}
+											</button>
+										))}
+									</td>
+								))}
+							</tr>
+						);
+					})
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<p class="empty" data-empty hidden>No models match those filters.</p>
+
+	<script type="application/json" data-explorer-json set:html={explorerJson} />
+</div>
+
+<script>
+	type Choice = { name: string; note?: string };
+	type Ver = {
+		name: string;
+		date: string | null;
+		status: string;
+		notes: string | null;
+		stack: Record<string, Choice[]>;
+	};
+
+	const STATUS_LABEL: Record<string, string> = {
+		current: 'Current',
+		preview: 'Preview',
+		previous: 'Previous',
+		legacy: 'Legacy',
+	};
+
+	function init(root: HTMLElement) {
+		const dataEl = root.querySelector<HTMLScriptElement>(
+			'[data-explorer-json]',
+		);
+		const data: Record<string, Ver[]> = dataEl
+			? JSON.parse(dataEl.textContent || '{}')
+			: {};
+
+		const cards = [...root.querySelectorAll<HTMLElement>('[data-card]')];
+		const rows = [...root.querySelectorAll<HTMLElement>('[data-row]')];
+		const searchEl = root.querySelector<HTMLInputElement>('[data-search]');
+		const emptyEl = root.querySelector<HTMLElement>('[data-empty]');
+		const cardsView = root.querySelector<HTMLElement>('[data-cards]');
+		const matrixView = root.querySelector<HTMLElement>('[data-matrix]');
+		const activeFilterBar = root.querySelector<HTMLElement>(
+			'[data-active-filter]',
+		);
+		const filterLabel = root.querySelector<HTMLElement>('[data-filter-label]');
+
+		const state = { q: '', kind: 'all', choice: '', view: 'cards' };
+
+		const esc = (s: string) =>
+			s.replace(
+				/[&<>"']/g,
+				(c) =>
+					({
+						'&': '&amp;',
+						'<': '&lt;',
+						'>': '&gt;',
+						'"': '&quot;',
+						"'": '&#39;',
+					})[c]!,
+			);
+
+		function chipHtml(c: Choice) {
+			return `<button type="button" class="chip" data-choice="${esc(
+				c.name,
+			)}" title="Filter by ${esc(c.name)}">${esc(c.name)}${
+				c.note ? `<em class="chip-note">${esc(c.note)}</em>` : ''
+			}</button>`;
+		}
+
+		function apply() {
+			const items = state.view === 'matrix' ? rows : cards;
+			let visible = 0;
+			const all = [...cards, ...rows];
+			for (const el of all) {
+				const kindOk = state.kind === 'all' || el.dataset.kind === state.kind;
+				const qOk =
+					!state.q || (el.dataset.haystack || '').includes(state.q);
+				const choiceOk =
+					!state.choice ||
+					(el.dataset.choices || '').split('|').includes(state.choice);
+				const show = kindOk && qOk && choiceOk;
+				el.toggleAttribute('hidden', !show);
+			}
+			for (const el of items) if (!el.hasAttribute('hidden')) visible++;
+			emptyEl?.toggleAttribute('hidden', visible !== 0);
+			// reflect active choice highlighting
+			root
+				.querySelectorAll<HTMLElement>('.chip[data-choice]')
+				.forEach((chip) =>
+					chip.classList.toggle(
+						'chip-active',
+						!!state.choice && chip.dataset.choice === state.choice,
+					),
+				);
+		}
+
+		function setChoice(choice: string) {
+			state.choice = state.choice === choice ? '' : choice;
+			if (state.choice && filterLabel) filterLabel.textContent = state.choice;
+			activeFilterBar?.toggleAttribute('hidden', !state.choice);
+			apply();
+		}
+
+		// Search
+		searchEl?.addEventListener('input', () => {
+			state.q = (searchEl.value || '').trim().toLowerCase();
+			apply();
+		});
+
+		// Kind + view segmented controls
+		root.querySelectorAll<HTMLElement>('[data-kind-btn]').forEach((btn) =>
+			btn.addEventListener('click', () => {
+				state.kind = btn.dataset.kindBtn!;
+				root
+					.querySelectorAll('[data-kind-btn]')
+					.forEach((b) => b.classList.toggle('active', b === btn));
+				apply();
+			}),
+		);
+		root.querySelectorAll<HTMLElement>('[data-view-btn]').forEach((btn) =>
+			btn.addEventListener('click', () => {
+				state.view = btn.dataset.viewBtn!;
+				root
+					.querySelectorAll('[data-view-btn]')
+					.forEach((b) => b.classList.toggle('active', b === btn));
+				cardsView?.toggleAttribute('hidden', state.view !== 'cards');
+				matrixView?.toggleAttribute('hidden', state.view !== 'matrix');
+				apply();
+			}),
+		);
+
+		// Clear filter
+		root
+			.querySelector('[data-clear-filter]')
+			?.addEventListener('click', () => setChoice(state.choice));
+
+		// Chip clicks (delegated, survives version re-render)
+		root.addEventListener('click', (e) => {
+			const chip = (e.target as HTMLElement).closest<HTMLElement>(
+				'.chip[data-choice]',
+			);
+			if (chip && root.contains(chip)) setChoice(chip.dataset.choice!);
+		});
+
+		// Version switching
+		root.querySelectorAll<HTMLSelectElement>('[data-version]').forEach((sel) => {
+			const card = sel.closest<HTMLElement>('[data-card]');
+			if (!card) return;
+			const versions = data[card.dataset.id!] || [];
+			sel.addEventListener('change', () => {
+				const v = versions[sel.selectedIndex];
+				if (!v) return;
+				const meta = card.querySelector<HTMLElement>('[data-version-meta]');
+				if (meta) {
+					meta.innerHTML =
+						`<span class="status status-${esc(v.status)}">${esc(
+							STATUS_LABEL[v.status] || v.status,
+						)}</span>` + (v.date ? `<span class="date">${esc(v.date)}</span>` : '');
+				}
+				const notes = card.querySelector<HTMLElement>('[data-version-notes]');
+				if (notes) {
+					notes.textContent = v.notes || '';
+					notes.toggleAttribute('hidden', !v.notes);
+				}
+				for (const dim of Object.keys(v.stack)) {
+					const dd = card.querySelector<HTMLElement>(`[data-dim="${dim}"]`);
+					if (dd) dd.innerHTML = (v.stack[dim] || []).map(chipHtml).join('');
+				}
+				apply();
+			});
+		});
+
+		apply();
+	}
+
+	document
+		.querySelectorAll<HTMLElement>('[data-explorer]')
+		.forEach((el) => init(el));
+</script>
+
+<style>
+	.explorer {
+		--chip-bg: var(--sl-color-gray-6);
+		--chip-bg-hover: var(--sl-color-gray-5);
+		margin-top: 1.5rem;
+	}
+
+	/* The [hidden] attribute is how filtering / view-switching toggles items.
+	   Several elements below set an explicit `display`, which would otherwise
+	   beat the UA `[hidden] { display: none }` rule — force it to win. */
+	.explorer [hidden] {
+		display: none !important;
+	}
+
+	/* Convergence headline */
+	.convergence {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 1.75rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 0.75rem;
+	}
+	.convergence li {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.6rem;
+		padding: 0.7rem 0.8rem;
+		background: var(--sl-color-black);
+	}
+	.convergence .dim-label {
+		display: block;
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+	}
+	.convergence .lead {
+		display: block;
+		font-weight: 600;
+		font-size: 1.05rem;
+		margin: 0.15rem 0 0.4rem;
+		color: var(--sl-color-white);
+	}
+	.convergence .bar {
+		display: block;
+		height: 5px;
+		border-radius: 3px;
+		background: var(--sl-color-gray-5);
+		overflow: hidden;
+	}
+	.convergence .bar-fill {
+		display: block;
+		height: 100%;
+		background: var(--sl-color-accent);
+	}
+	.convergence .frac {
+		display: block;
+		font-size: 0.72rem;
+		color: var(--sl-color-gray-3);
+		margin-top: 0.35rem;
+	}
+
+	/* Controls */
+	.controls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		align-items: center;
+		margin-bottom: 0.9rem;
+	}
+	.search {
+		flex: 1 1 14rem;
+		min-width: 0;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		background: var(--sl-color-black);
+		color: var(--sl-color-white);
+		font: inherit;
+	}
+	.search:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 1px;
+	}
+	.seg {
+		display: inline-flex;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		overflow: hidden;
+	}
+	.seg button {
+		font: inherit;
+		font-size: 0.85rem;
+		padding: 0.45rem 0.8rem;
+		background: var(--sl-color-black);
+		color: var(--sl-color-gray-2);
+		border: 0;
+		cursor: pointer;
+	}
+	.seg button + button {
+		border-left: 1px solid var(--sl-color-gray-5);
+	}
+	.seg button:hover {
+		background: var(--chip-bg-hover);
+	}
+	.seg button.active {
+		background: var(--sl-color-accent);
+		color: var(--sl-color-white);
+	}
+
+	.active-filter {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.85rem;
+		margin-bottom: 1rem;
+		color: var(--sl-color-gray-2);
+	}
+	.active-filter .clear {
+		font: inherit;
+		font-size: 0.8rem;
+		cursor: pointer;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.4rem;
+		background: var(--sl-color-black);
+		color: var(--sl-color-gray-2);
+		padding: 0.15rem 0.5rem;
+	}
+
+	/* Cards */
+	.cards {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+		gap: 1rem;
+	}
+	.card {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+		padding: 1rem 1.1rem 0.9rem;
+		background: var(--sl-color-black);
+		display: flex;
+		flex-direction: column;
+	}
+	.card-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 0.5rem;
+	}
+	.card-head .vendor {
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+	}
+	.card-head h3 {
+		margin: 0.1rem 0 0;
+		font-size: 1.15rem;
+	}
+	.card-head h3 a {
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.card-head h3 a:hover {
+		color: var(--sl-color-accent-high);
+		text-decoration: underline;
+	}
+	.kind {
+		font-size: 0.68rem;
+		padding: 0.15rem 0.5rem;
+		border-radius: 1rem;
+		white-space: nowrap;
+		border: 1px solid var(--sl-color-gray-5);
+		color: var(--sl-color-gray-2);
+	}
+	.kind-product {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+	}
+	.blurb {
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-2);
+		margin: 0.6rem 0 0.4rem;
+		line-height: 1.45;
+	}
+
+	.version-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0.5rem 0 0;
+	}
+	.version-pick {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
+	.version-pick select {
+		font: inherit;
+		font-size: 0.82rem;
+		padding: 0.25rem 0.4rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-black);
+		color: var(--sl-color-white);
+	}
+	.version-single {
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.version-meta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.72rem;
+		color: var(--sl-color-gray-3);
+	}
+	.status {
+		padding: 0.1rem 0.45rem;
+		border-radius: 1rem;
+		font-size: 0.68rem;
+		border: 1px solid var(--sl-color-gray-5);
+	}
+	.status-current {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+	}
+	.status-preview {
+		border-color: var(--sl-color-orange, #c2740c);
+		color: var(--sl-color-orange-high, #e8920c);
+	}
+	.version-notes {
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-3);
+		font-style: italic;
+		margin: 0.45rem 0 0;
+	}
+
+	.dims {
+		margin: 0.85rem 0 0;
+		display: grid;
+		gap: 0.55rem;
+	}
+	.dim {
+		display: grid;
+		grid-template-columns: 7.5rem 1fr;
+		gap: 0.5rem;
+		align-items: baseline;
+	}
+	.dim dt {
+		font-size: 0.74rem;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--sl-color-gray-3);
+	}
+	.dim dd {
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+
+	.chip {
+		font: inherit;
+		font-size: 0.78rem;
+		line-height: 1.2;
+		padding: 0.2rem 0.55rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sl-color-gray-5);
+		background: var(--chip-bg);
+		color: var(--sl-color-white);
+		cursor: pointer;
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.3rem;
+	}
+	.chip:hover {
+		background: var(--chip-bg-hover);
+		border-color: var(--sl-color-accent);
+	}
+	.chip-active {
+		background: var(--sl-color-accent);
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-white);
+	}
+	.chip-note {
+		font-style: normal;
+		font-size: 0.68rem;
+		opacity: 0.7;
+	}
+
+	.card-foot {
+		margin-top: 0.85rem;
+		padding-top: 0.6rem;
+		border-top: 1px solid var(--sl-color-gray-6);
+		font-size: 0.72rem;
+		color: var(--sl-color-gray-3);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+
+	/* Matrix */
+	.matrix-wrap {
+		overflow-x: auto;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+	}
+	.matrix {
+		border-collapse: collapse;
+		width: 100%;
+		font-size: 0.82rem;
+		margin: 0;
+	}
+	.matrix th,
+	.matrix td {
+		text-align: left;
+		padding: 0.6rem 0.7rem;
+		border-bottom: 1px solid var(--sl-color-gray-6);
+		vertical-align: top;
+	}
+	.matrix thead th {
+		position: sticky;
+		top: 0;
+		background: var(--sl-color-gray-6);
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.matrix tbody th .vendor {
+		display: block;
+		font-size: 0.68rem;
+		font-weight: 400;
+		color: var(--sl-color-gray-3);
+	}
+	.matrix td {
+		display: table-cell;
+	}
+	.matrix td .chip {
+		margin: 0.1rem 0.2rem 0.1rem 0;
+	}
+
+	.empty {
+		text-align: center;
+		color: var(--sl-color-gray-3);
+		padding: 2rem 0;
+	}
+
+	@media (max-width: 480px) {
+		.dim {
+			grid-template-columns: 1fr;
+			gap: 0.2rem;
+		}
+	}
+</style>
