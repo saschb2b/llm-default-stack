@@ -1,0 +1,25 @@
+{
+  "name": "llm-default-stack",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "An interactive explorer for the default tech stack each LLM reaches for when scaffolding a React app.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.39.2",
+    "astro": "^6.3.1",
+    "sharp": "^0.34.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  }
+}

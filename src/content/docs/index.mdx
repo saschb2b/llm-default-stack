@@ -1,0 +1,42 @@
+---
+title: LLM Default Stack
+description: Explore the default React stack each LLM (and version) reaches for — framework, styling, components, state, and backend.
+template: splash
+hero:
+  tagline: Open three chat tabs, type "build me a todo app," and diff the package.json files. They rhyme. This is the explorer for what each model reaches for by default.
+  actions:
+    - text: Open the explorer
+      link: /explorer/
+      icon: right-arrow
+    - text: Read the article
+      link: https://www.saschb2b.com/blog/llm-default-react-stack
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Six models, one stack
+
+Ask any modern coding model to scaffold a React app with no further direction and
+the answers converge: a React metaframework, Tailwind for styling, shadcn/ui for
+components, TanStack Query for data. The framework column wobbles. The styling and
+component columns barely move.
+
+This site turns that observation into something you can **explore** — model by model,
+version by version, dimension by dimension.
+
+<CardGrid stagger>
+	<Card title="Per model & version" icon="seti:react">
+		Browse what each model — and each released version — defaults to across five
+		stack dimensions.
+	</Card>
+	<Card title="Spot the convergence" icon="approve-check">
+		Filter by framework, styling, components, state, or backend and watch the
+		columns collapse to a single answer.
+	</Card>
+	<Card title="Sourced & contributable" icon="open-book">
+		Every entry cites where the default came from. New models and versions are a
+		pull request away.
+	</Card>
+</CardGrid>
