@@ -249,7 +249,7 @@ function choiceList(m: (typeof models)[number]): string {
 
 	<p class="empty" data-empty hidden>No models match those filters.</p>
 
-	<script type="application/json" data-explorer-json set:html={explorerJson} />
+	<script is:inline type="application/json" data-explorer-json set:html={explorerJson} />
 </div>
 
 <script>
