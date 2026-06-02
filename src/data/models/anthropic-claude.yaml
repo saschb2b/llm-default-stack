@@ -6,7 +6,8 @@ order: 1
 blurb: >-
   Anthropic's model line reaches for the Vercel-flavoured React stack and is one
   of the heaviest shadcn/ui users — the only family to routinely add Zustand on
-  top of TanStack Query.
+  top of TanStack Query. (Stack reflects agentic/production use; a bare chat
+  stays modern but goes leaner — hand-rolled components, no data library.)
 defaultStack:
   framework:
     - name: Next.js
@@ -23,40 +24,46 @@ defaultStack:
   backend:
     - name: Vercel
     - name: Supabase
-# Library versions the current flagship (Opus 4.8) emits by default — the lag.
+# Library versions, from a bare-prompt probe of Opus 4.8 — the lag.
 emits:
-  - name: Vite
-    version: '7'
-    note: scaffolds Vite 7 although Vite 8 has been stable since March 2026
+  - name: Next.js
+    version: '15'
+    note: bare-chat default framework; one major behind 16
+  - name: React
+    version: '19'
+    note: current
   - name: Tailwind
     version: '4'
-    note: current — Claude is one of the few already on the latest major
-# Modern-practice checklist. Self-reported by Opus 4.8 (this very model) — these
-# are my own default tendencies, and they're verifiable by testing me.
+    note: current, CSS-first config
+  - name: Vite
+    version: '7'
+    note: when asked for Vite specifically — one behind 8
+# Modern-practice checklist, measured in a bare-prompt probe of Opus 4.8 (a touch
+# more modern than its own hedged self-report — the code commits fully).
 checklist:
   - id: app-router
     status: adopted
   - id: rsc-default
     status: adopted
-    note: marks "use client" at the interactive leaves
+    note: async Server Components; "use client" only on the interactive leaves
   - id: server-actions
-    status: partial
-    note: mixes Server Actions with route handlers depending on the task
+    status: adopted
+    note: login / logout / addTodo as Server Actions
   - id: react-compiler
     status: missing
-    note: writes manual useMemo/useCallback; doesn't assume the compiler is on
+    note: not enabled (no compiler dep/config); no memoization needed here
   - id: ref-as-prop
-    status: partial
-    note: still reaches for forwardRef out of habit (React 18-heavy training)
+    status: adopted
+    note: reusable Input takes ref as a prop, no forwardRef
   - id: form-actions
-    status: partial
-    note: Actions for simple forms, controlled inputs otherwise
+    status: adopted
+    note: useActionState + <form action={fn}>
   - id: use-hook
     status: missing
-    note: rarely reaches for use() or in-component document metadata by default
+    note: data awaited in async Server Components; metadata via Next's metadata export
   - id: tailwind-v4-config
     status: adopted
-    note: '@import "tailwindcss" + @theme rather than a JS config'
+    note: '@import "tailwindcss" + @theme, no JS config'
   - id: ts-strict
     status: adopted
 versions:
@@ -76,5 +83,6 @@ versions:
     releaseDate: '2024-06'
     status: legacy
 sources:
+  - label: Bare-prompt probe run (Opus 4.8), June 2026
   - label: Six Models, One React Stack
     url: https://www.saschb2b.com/blog/llm-default-react-stack
