@@ -88,6 +88,22 @@ const models = defineCollection({
 				}),
 			)
 			.default([]),
+		/**
+		 * Status against the modern-practice checklist (src/lib/practices.ts).
+		 * Observational; `id` must match a practice id. Omit a practice to leave
+		 * it unassessed.
+		 */
+		checklist: z
+			.array(
+				z.object({
+					id: z.string(),
+					status: z
+						.enum(['adopted', 'partial', 'missing', 'unknown'])
+						.default('unknown'),
+					note: z.string().optional(),
+				}),
+			)
+			.default([]),
 		versions: z.array(version).default([]),
 		sources: z.array(source).default([]),
 	}),

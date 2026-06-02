@@ -9,6 +9,20 @@ import {
 	NONCOMMITTAL,
 } from '../../lib/models';
 import { lagFor } from '../../lib/stack-versions';
+import { PRACTICES, PRACTICE_BY_ID } from '../../lib/practices';
+
+const STATUS_MARK: Record<string, string> = {
+	adopted: '✓',
+	partial: '~',
+	missing: '✗',
+	unknown: '–',
+};
+const STATUS_TEXT: Record<string, string> = {
+	adopted: 'Adopted',
+	partial: 'Partial',
+	missing: 'Missing',
+	unknown: 'Unknown',
+};
 
 function lagLabel(lag: ReturnType<typeof lagFor>): string {
 	if (!lag || lag.majorsBehind == null) return '—';
@@ -30,9 +44,30 @@ const versions = d.versions;
 const sources = d.sources;
 const emits = d.emits;
 
+// Group the model's checklist statuses by practice group, preserving the
+// canonical order in PRACTICES.
+const statusById = new Map(d.checklist.map((c) => [c.id, c]));
+const checklistGroups: {
+	group: string;
+	items: { practice: (typeof PRACTICES)[number]; status: string; note?: string }[];
+}[] = [];
+for (const practice of PRACTICES) {
+	const c = statusById.get(practice.id);
+	if (!c) continue;
+	let g = checklistGroups.find((x) => x.group === practice.group);
+	if (!g) {
+		g = { group: practice.group, items: [] };
+		checklistGroups.push(g);
+	}
+	g.items.push({ practice, status: c.status, note: c.note });
+}
+const hasChecklist = checklistGroups.length > 0;
+
 // Build the on-page table of contents for the sections we actually render.
 const headings = [{ depth: 2, slug: 'default-stack', text: 'Default stack' }];
 if (emits.length) headings.push({ depth: 2, slug: 'version-lag', text: 'Version lag' });
+if (hasChecklist)
+	headings.push({ depth: 2, slug: 'checklist', text: 'Modern-practice checklist' });
 if (versions.length) headings.push({ depth: 2, slug: 'versions', text: 'Versions' });
 if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' });
 ---
@@ -132,6 +167,50 @@ if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' }
 						})}
 					</tbody>
 				</table>
+			</>
+		)
+	}
+
+	{
+		hasChecklist && (
+			<>
+				<h2 id="checklist">Modern-practice checklist</h2>
+				<p class="note">
+					How {d.family} measures up on current React / tooling idioms by
+					default. Observational — verify by testing.
+				</p>
+				{checklistGroups.map((g) => (
+					<div class="check-group">
+						<p class="check-group-title">{g.group}</p>
+						<ul class="checklist">
+							{g.items.map((it) => (
+								<li class={`check check-${it.status}`}>
+									<span class="mark" aria-hidden="true">
+										{STATUS_MARK[it.status]}
+									</span>
+									<div class="check-body">
+										<span class="check-head">
+											<strong>{it.practice.label}</strong>
+											<span class="status-label">{STATUS_TEXT[it.status]}</span>
+											<a
+												class="ref"
+												href={it.practice.source}
+												target="_blank"
+												rel="noopener"
+											>
+												docs ↗
+											</a>
+										</span>
+										<span class="check-blurb">
+											{it.practice.blurb}
+											{it.note && <em> — {it.note}</em>}
+										</span>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
 			</>
 		)
 	}
@@ -315,6 +394,80 @@ if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' }
 	.lag-behind {
 		color: var(--sl-color-orange-high, #e8920c);
 		font-weight: 600;
+	}
+
+	.check-group {
+		margin-top: 1.5rem;
+	}
+	.check-group-title {
+		font-size: 0.74rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+		margin: 0 0 0.5rem;
+	}
+	.checklist {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.65rem;
+	}
+	.check {
+		margin: 0;
+		display: grid;
+		grid-template-columns: 1.6rem 1fr;
+		gap: 0.6rem;
+		align-items: start;
+	}
+	.mark {
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 50%;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.8rem;
+		font-weight: 700;
+		border: 1px solid var(--sl-color-gray-5);
+		color: var(--sl-color-gray-3);
+	}
+	.check-adopted .mark {
+		color: var(--sl-color-green-high, #3ba55d);
+		border-color: var(--sl-color-green, #3ba55d);
+	}
+	.check-partial .mark {
+		color: var(--sl-color-orange-high, #e8920c);
+		border-color: var(--sl-color-orange, #c2740c);
+	}
+	.check-missing .mark {
+		color: var(--sl-color-red-high, #e5484d);
+		border-color: var(--sl-color-red, #c2474b);
+	}
+	.check-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
+	}
+	.status-label {
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--sl-color-gray-3);
+	}
+	.ref {
+		font-size: 0.72rem;
+		margin-left: auto;
+	}
+	.check-blurb {
+		display: block;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-2);
+		margin-top: 0.15rem;
+	}
+	.check-blurb em {
+		color: var(--sl-color-gray-3);
 	}
 	.status {
 		padding: 0.1rem 0.45rem;

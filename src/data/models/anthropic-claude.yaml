@@ -31,6 +31,34 @@ emits:
   - name: Tailwind
     version: '4'
     note: current — Claude is one of the few already on the latest major
+# Modern-practice checklist. Self-reported by Opus 4.8 (this very model) — these
+# are my own default tendencies, and they're verifiable by testing me.
+checklist:
+  - id: app-router
+    status: adopted
+  - id: rsc-default
+    status: adopted
+    note: marks "use client" at the interactive leaves
+  - id: server-actions
+    status: partial
+    note: mixes Server Actions with route handlers depending on the task
+  - id: react-compiler
+    status: missing
+    note: writes manual useMemo/useCallback; doesn't assume the compiler is on
+  - id: ref-as-prop
+    status: partial
+    note: still reaches for forwardRef out of habit (React 18-heavy training)
+  - id: form-actions
+    status: partial
+    note: Actions for simple forms, controlled inputs otherwise
+  - id: use-hook
+    status: missing
+    note: rarely reaches for use() or in-component document metadata by default
+  - id: tailwind-v4-config
+    status: adopted
+    note: '@import "tailwindcss" + @theme rather than a JS config'
+  - id: ts-strict
+    status: adopted
 versions:
   - name: Claude Opus 4.8
     releaseDate: '2026-05-28'
