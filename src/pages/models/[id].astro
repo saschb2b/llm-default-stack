@@ -1,0 +1,274 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import {
+	getModels,
+	resolveStack,
+	DIMENSIONS,
+	KIND_LABEL,
+	STATUS_LABEL,
+	NONCOMMITTAL,
+} from '../../lib/models';
+
+export async function getStaticPaths() {
+	const models = await getModels();
+	return models.map((m) => ({ params: { id: m.id }, props: { model: m } }));
+}
+
+const { model } = Astro.props;
+const d = model.data;
+const stack = resolveStack(model);
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+
+const versions = d.versions;
+const sources = d.sources;
+
+// Build the on-page table of contents for the sections we actually render.
+const headings = [{ depth: 2, slug: 'default-stack', text: 'Default stack' }];
+if (versions.length) headings.push({ depth: 2, slug: 'versions', text: 'Versions' });
+if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' });
+---
+
+<StarlightPage
+	frontmatter={{
+		title: d.family,
+		description:
+			d.blurb ?? `The default React stack ${d.family} reaches for.`,
+		tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 2 },
+	}}
+	headings={headings}
+>
+	<p class="meta">
+		<span class="vendor">{d.vendor}</span>
+		<span class={`kind kind-${d.kind}`}>{KIND_LABEL[d.kind]}</span>
+		{d.poweredBy && (
+			<span class="powered">
+				Powered by <strong>{d.poweredBy}</strong>
+			</span>
+		)}
+		{d.url && (
+			<a class="visit" href={d.url} target="_blank" rel="noopener">
+				Visit {d.family} ↗
+			</a>
+		)}
+	</p>
+
+	{d.blurb && <p class="lead">{d.blurb}</p>}
+
+	<h2 id="default-stack">Default stack</h2>
+	<dl class="stack">
+		{
+			DIMENSIONS.map((dim) => (
+				<div class="row">
+					<dt>
+						{dim.label}
+						<small>{dim.blurb}</small>
+					</dt>
+					<dd>
+						{stack[dim.key].length ? (
+							stack[dim.key].map((c) => (
+								<span class={`chip${NONCOMMITTAL.has(c.name) ? ' soft' : ''}`}>
+									{c.name}
+									{c.note && <em>{c.note}</em>}
+								</span>
+							))
+						) : (
+							<span class="empty">Not documented</span>
+						)}
+					</dd>
+				</div>
+			))
+		}
+	</dl>
+
+	{
+		versions.length > 0 && (
+			<>
+				<h2 id="versions">Versions</h2>
+				<p class="note">
+					Defaults are observed at the family/generation level — see the{' '}
+					<a href={`${base}/about/methodology/`}>methodology</a>. A version only
+					diverges where a specific difference has been measured.
+				</p>
+				<table class="versions">
+					<thead>
+						<tr>
+							<th>Version</th>
+							<th>Status</th>
+							<th>Released</th>
+							<th>Notes</th>
+						</tr>
+					</thead>
+					<tbody>
+						{versions.map((v) => (
+							<tr>
+								<th scope="row">{v.name}</th>
+								<td>
+									<span class={`status status-${v.status}`}>
+										{STATUS_LABEL[v.status]}
+									</span>
+								</td>
+								<td>{v.releaseDate ?? '—'}</td>
+								<td>{v.notes ?? ''}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</>
+		)
+	}
+
+	{
+		sources.length > 0 && (
+			<>
+				<h2 id="sources">Sources</h2>
+				<ul class="sources">
+					{sources.map((s) => (
+						<li>
+							{s.url ? (
+								<a href={s.url} target="_blank" rel="noopener">
+									{s.label}
+								</a>
+							) : (
+								s.label
+							)}
+						</li>
+					))}
+				</ul>
+			</>
+		)
+	}
+
+	<p class="back">
+		<a href={`${base}/explorer/`}>← Back to the explorer</a>
+	</p>
+</StarlightPage>
+
+<style>
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.6rem;
+		margin: 0 0 0.5rem;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-2);
+	}
+	.meta .vendor {
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-size: 0.72rem;
+		color: var(--sl-color-gray-3);
+	}
+	.kind {
+		font-size: 0.68rem;
+		padding: 0.15rem 0.5rem;
+		border-radius: 1rem;
+		border: 1px solid var(--sl-color-gray-5);
+		color: var(--sl-color-gray-2);
+	}
+	.kind-product {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+	}
+	.kind-agent {
+		border-color: var(--sl-color-purple, #8b5cf6);
+		color: var(--sl-color-purple-high, #a78bfa);
+	}
+	.meta .visit {
+		margin-left: auto;
+	}
+	.lead {
+		font-size: 1.05rem;
+		color: var(--sl-color-gray-1);
+	}
+
+	.stack {
+		display: grid;
+		gap: 0.25rem;
+		margin: 0;
+	}
+	.stack .row {
+		display: grid;
+		grid-template-columns: 12rem 1fr;
+		gap: 1rem;
+		align-items: baseline;
+		padding: 0.7rem 0;
+		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	.stack dt {
+		font-weight: 600;
+	}
+	.stack dt small {
+		display: block;
+		font-weight: 400;
+		font-size: 0.74rem;
+		color: var(--sl-color-gray-3);
+	}
+	.stack dd {
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.chip {
+		font-size: 0.85rem;
+		line-height: 1.2;
+		padding: 0.2rem 0.6rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.3rem;
+	}
+	.chip.soft {
+		background: transparent;
+		color: var(--sl-color-gray-2);
+		border-style: dashed;
+	}
+	.chip em {
+		font-style: normal;
+		font-size: 0.72rem;
+		opacity: 0.7;
+	}
+	.empty {
+		color: var(--sl-color-gray-4);
+		font-style: italic;
+	}
+
+	.note {
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-3);
+	}
+	.versions {
+		width: 100%;
+	}
+	.status {
+		padding: 0.1rem 0.45rem;
+		border-radius: 1rem;
+		font-size: 0.72rem;
+		border: 1px solid var(--sl-color-gray-5);
+		white-space: nowrap;
+	}
+	.status-current {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+	}
+	.status-preview {
+		border-color: var(--sl-color-orange, #c2740c);
+		color: var(--sl-color-orange-high, #e8920c);
+	}
+
+	.back {
+		margin-top: 2.5rem;
+		font-size: 0.9rem;
+	}
+
+	@media (max-width: 50rem) {
+		.stack .row {
+			grid-template-columns: 1fr;
+			gap: 0.3rem;
+		}
+	}
+</style>
