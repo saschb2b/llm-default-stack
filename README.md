@@ -32,7 +32,8 @@ to **GitHub Actions**.
 
 `astro.config.mjs` is configured for the project site at
 `https://saschb2b.github.io/llm-default-stack/` via `site` + `base`. If you move it to a
-custom domain, update those two constants (internal links are relative, so they follow).
+custom domain, update those two constants — internal links derive from the configured
+base (via `import.meta.env.BASE_URL`), so they follow automatically.
 
 ## Adding a model
 

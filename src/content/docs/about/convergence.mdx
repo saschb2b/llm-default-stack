@@ -3,12 +3,15 @@ title: The convergence
 description: Why every coding model reaches for the same React stack — token economics, shadcn/ui's open-code model, and the training-data flywheel.
 ---
 
+export const withBase = (p) =>
+	import.meta.env.BASE_URL.replace(/\/+$/, '') + '/' + p.replace(/^\/+/, '');
+
 import { Aside, CardGrid, Card } from '@astrojs/starlight/components';
 
 Open three chat tabs — Claude, GPT, Gemini — and give each the same bare prompt:
 *"build me a todo app,"* nothing else. Then diff the three `package.json` files.
 They rhyme. Run the same test across more than forty families — raw models, app
-builders, and coding agents — and the [explorer's matrix](../../explorer/) makes
+builders, and coding agents — and the <a href={withBase('explorer/')}>explorer's matrix</a> makes
 the shape obvious at a glance.
 
 <Aside type="tip" title="This is the companion to an article">
@@ -83,5 +86,5 @@ and the gap between them is widening.
 
 <Aside>
 	Think a default is wrong, out of date, or missing a model? The data is a few
-	lines of YAML — see [Methodology & contributing](../methodology/).
+	lines of YAML — see <a href={withBase('about/methodology/')}>Methodology &amp; contributing</a>.
 </Aside>

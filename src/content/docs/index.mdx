@@ -4,17 +4,25 @@ description: Explore the default React stack each LLM (and version) reaches for 
 template: splash
 hero:
   tagline: Open three chat tabs, type "build me a todo app," and diff the package.json files. They rhyme. This is the explorer for what each model reaches for by default.
-  actions:
-    - text: Open the explorer
-      link: explorer/
-      icon: right-arrow
-    - text: Read the article
-      link: https://www.saschb2b.com/blog/llm-default-react-stack
-      icon: external
-      variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+export const withBase = (p) =>
+	import.meta.env.BASE_URL.replace(/\/+$/, '') + '/' + p.replace(/^\/+/, '');
+
+import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+
+<div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin:0 0 2rem;">
+	<LinkButton href={withBase('explorer/')} icon="right-arrow">
+		Open the explorer
+	</LinkButton>
+	<LinkButton
+		href="https://www.saschb2b.com/blog/llm-default-react-stack"
+		variant="minimal"
+		icon="external"
+	>
+		Read the article
+	</LinkButton>
+</div>
 
 ## Six models, one stack
 
@@ -41,5 +49,5 @@ version by version, dimension by dimension.
 	</Card>
 </CardGrid>
 
-New here? Read **[why the stacks converge](about/convergence/)**, or see
-**[how the data is sourced and how to contribute](about/methodology/)**.
+New here? Read <a href={withBase('about/convergence/')}><strong>why the stacks converge</strong></a>, or
+see <a href={withBase('about/methodology/')}><strong>how the data is sourced and how to contribute</strong></a>.
