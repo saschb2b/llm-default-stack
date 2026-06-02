@@ -84,6 +84,22 @@ None of this means the default stack is wrong — it's a genuinely good stack. T
 point is that "good" and "the only thing you're shown" are different properties,
 and the gap between them is widening.
 
+## The lag is measurable
+
+You can read the lag straight off the output. As of mid-2026:
+
+- **Vite 8** has been stable since [March 2026](https://vite.dev/blog/announcing-vite8),
+  yet Claude Opus 4.8 (May 2026) still scaffolds **Vite 7** — a whole major behind,
+  months after release.
+- **React Compiler** went [stable in October 2025](https://react.dev/learn/react-compiler/introduction)
+  and auto-memoizes components, removing most hand-written `useMemo`/`useCallback`.
+  Models still reach for manual memoization by default, as if it weren't there.
+
+So it isn't only version numbers — it's *patterns*. A model defaults to the idioms
+that dominated its training data, so the newer the technique, the longer it takes to
+surface. And it compounds: today's lagging output becomes tomorrow's training data.
+Each model's page records the specific versions it emits and how far behind they are.
+
 <Aside>
 	Think a default is wrong, out of date, or missing a model? The data is a few
 	lines of YAML — see <a href={withBase('about/methodology/')}>Methodology &amp; contributing</a>.

@@ -54,6 +54,10 @@ Worth being honest about the grain of the data:
   haven't been filled in, because that takes deliberate measurement.
 - **Products don't have public version histories,** so v0, Lovable, and Bolt are
   single entries rather than timelines.
+- **Version-lag (`emits`) is observational.** Which library version a model
+  scaffolds isn't documented anywhere — it has to be tested. So it's filled in
+  only where someone has run it (tested on the current flagship), and the
+  "latest" it's compared against lives in `src/lib/stack-versions.ts`.
 - **It's a snapshot.** Models ship constantly and the training flywheel keeps
   turning. A default that's true today drifts; corrections are welcome.
 
@@ -87,6 +91,10 @@ defaultStack:
   backend:
     - name: Vercel
     - name: Supabase
+emits: # optional — the library *versions* the current flagship scaffolds (the lag)
+  - name: Vite # match a key in src/lib/stack-versions.ts to compute the lag
+    version: '7'
+    note: although Vite 8 shipped in March 2026
 versions:
   - name: Claude Opus 4.8
     releaseDate: '2026-05-28' # quote it so YAML keeps it a string
