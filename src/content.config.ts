@@ -59,9 +59,16 @@ const models = defineCollection({
 	schema: z.object({
 		vendor: z.string(),
 		family: z.string(),
-		/** 'model' = a raw model line; 'product' = an app/agent built on top. */
-		kind: z.enum(['model', 'product']).default('model'),
+		/**
+		 * 'model'   = a raw model line.
+		 * 'product' = an app/site builder that imposes a default stack.
+		 * 'agent'   = a coding agent/IDE that works on your repo (usually
+		 *             mirrors the project rather than imposing a stack).
+		 */
+		kind: z.enum(['model', 'product', 'agent']).default('model'),
 		url: z.string().url().optional(),
+		/** For products/agents: the model(s) that power it by default. */
+		poweredBy: z.string().optional(),
 		blurb: z.string().optional(),
 		/** Lower sorts first in the explorer. */
 		order: z.number().default(99),

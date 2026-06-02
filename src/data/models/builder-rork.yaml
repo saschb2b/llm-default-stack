@@ -1,0 +1,25 @@
+vendor: Rork
+family: Rork
+kind: product
+poweredBy: Claude (Anthropic)
+url: https://rork.com
+order: 19
+blurb: >-
+  Mobile-first app generator. Builds React Native via Expo, styled with
+  NativeWind (Tailwind for React Native). Backend is optional — Rork's own
+  serverless functions, or a Supabase/Firebase integration.
+defaultStack:
+  framework:
+    - name: Expo
+      note: React Native
+  styling:
+    - name: NativeWind
+      note: Tailwind for React Native
+  backend:
+    - name: Rork (built-in)
+      note: optional Supabase/Firebase
+sources:
+  - label: Rork FAQ
+    url: https://rork.com/faq
+  - label: Hands-on Rork (Expo) review
+    url: https://timewell.jp/en/columns/rork-expo

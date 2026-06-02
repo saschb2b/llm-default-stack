@@ -1,0 +1,26 @@
+vendor: Aider AI
+family: aider
+kind: agent
+poweredBy: Bring your own model
+url: https://aider.chat
+order: 37
+blurb: >-
+  Terminal pair-programmer built for pre-existing repositories — you add files
+  before it edits them. It has no greenfield scaffolder; it works within the
+  project you point it at.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: aider usage tips (docs)
+    url: https://aider.chat/docs/usage/tips.html
+  - label: aider FAQ
+    url: https://aider.chat/docs/faq.html

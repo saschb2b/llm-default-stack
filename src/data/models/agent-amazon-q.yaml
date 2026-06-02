@@ -1,0 +1,25 @@
+vendor: AWS
+family: Amazon Q Developer
+kind: agent
+url: https://aws.amazon.com/q/developer/
+order: 38
+blurb: >-
+  AWS's coding agent. Its /dev agent scaffolds from your prompt and the current
+  workspace context (and optional scaffold documents) rather than imposing a
+  fixed default stack.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Amazon Q Developer agents (AWS blog)
+    url: https://aws.amazon.com/blogs/devops/streamline-development-with-new-amazon-q-developer-agents/
+  - label: Amazon Q Developer scaffolding tips (dev.to)
+    url: https://dev.to/aws/amazon-q-developer-tips-no11-scaffolding-5c6m

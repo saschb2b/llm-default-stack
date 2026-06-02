@@ -1,0 +1,21 @@
+vendor: a0.dev
+family: a0.dev
+kind: product
+url: https://a0.dev
+order: 20
+blurb: >-
+  Mobile-first app generator (YC W25). Generates React Native via Expo, with a
+  backend powered by Convex or Supabase. Styling and components aren't publicly
+  documented.
+defaultStack:
+  framework:
+    - name: Expo
+      note: React Native
+  backend:
+    - name: Convex
+    - name: Supabase
+sources:
+  - label: a0.dev
+    url: https://a0.dev
+  - label: Launch HN — a0.dev
+    url: https://news.ycombinator.com/item?id=43015267

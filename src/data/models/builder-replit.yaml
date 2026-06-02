@@ -1,0 +1,26 @@
+vendor: Replit
+family: Replit Agent
+kind: product
+url: https://replit.com/products/agent
+order: 14
+blurb: >-
+  Replit's full-stack agent picks a stack per prompt rather than enforcing one,
+  but its de-facto JavaScript default is React + Vite + Tailwind + shadcn/ui with
+  an Express + Postgres backend on Replit's own hosting.
+defaultStack:
+  framework:
+    - name: Vite
+      note: React + TS; agent varies it by prompt
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  backend:
+    - name: Express + Neon Postgres
+      note: Drizzle ORM
+    - name: Replit hosting
+sources:
+  - label: Replit Agent — replit.md (docs)
+    url: https://docs.replit.com/core-concepts/agent/replit-dot-md
+  - label: Hands-on Replit Agent 3 builds
+    url: https://atalupadhyay.wordpress.com/2025/12/04/replit-agent-3-building-3-production-ready-web-apps-in-an-afternoon/

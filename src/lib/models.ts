@@ -37,6 +37,20 @@ export const STATUS_LABEL: Record<Version['status'], string> = {
 	legacy: 'Legacy',
 };
 
+export const KIND_LABEL: Record<ModelEntry['data']['kind'], string> = {
+	model: 'Model',
+	product: 'Builder',
+	agent: 'Agent',
+};
+
+/**
+ * Choices that decline to commit to a specific tool ("whatever the project
+ * uses"). They're real, citable answers, but they're excluded from the
+ * convergence numerator/denominator so the "what's the dominant default"
+ * counts stay meaningful.
+ */
+export const NONCOMMITTAL = new Set(['Mirrors project', 'Varies', 'Flexible']);
+
 /** Load all model families, sorted by `order` then family name. */
 export async function getModels(): Promise<ModelEntry[]> {
 	const models = await getCollection('models');
@@ -74,26 +88,42 @@ export function versionDivergesFrom(
 }
 
 /**
- * Count, per dimension, how many families pick each choice. Powers the
- * "the column collapses to one answer" convergence views.
+ * Count, per dimension, how many families pick each concrete choice — the
+ * "the column collapses to one answer" convergence view. `documented` is the
+ * number of families that name a concrete (non-noncommittal) default, and is
+ * the denominator for `share`, so families that "mirror the project" or don't
+ * document a default don't dilute the signal.
  */
 export function tallyDimension(
 	models: ModelEntry[],
 	key: DimensionKey,
-): { name: string; count: number; share: number }[] {
+): {
+	choices: { name: string; count: number; share: number }[];
+	documented: number;
+	total: number;
+} {
 	const counts = new Map<string, number>();
+	let documented = 0;
 	for (const m of models) {
+		const concrete = (m.data.defaultStack[key] ?? []).filter(
+			(c) => !NONCOMMITTAL.has(c.name),
+		);
+		if (concrete.length) documented++;
 		const seen = new Set<string>();
-		for (const choice of m.data.defaultStack[key] ?? []) {
+		for (const choice of concrete) {
 			if (seen.has(choice.name)) continue;
 			seen.add(choice.name);
 			counts.set(choice.name, (counts.get(choice.name) ?? 0) + 1);
 		}
 	}
-	const total = models.length;
-	return [...counts.entries()]
-		.map(([name, count]) => ({ name, count, share: count / total }))
+	const choices = [...counts.entries()]
+		.map(([name, count]) => ({
+			name,
+			count,
+			share: documented ? count / documented : 0,
+		}))
 		.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+	return { choices, documented, total: models.length };
 }
 
 /** Stable slug for linking to a family. */

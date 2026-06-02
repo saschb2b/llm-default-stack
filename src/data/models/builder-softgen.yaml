@@ -1,0 +1,27 @@
+vendor: Softgen
+family: Softgen
+kind: product
+url: https://softgen.ai
+order: 16
+blurb: >-
+  Full-stack web app builder. Next.js 15 + Tailwind + shadcn/ui frontend, with a
+  Firebase or Supabase backend, deployed to Vercel.
+defaultStack:
+  framework:
+    - name: Next.js
+      note: v15
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  backend:
+    - name: Firebase
+    - name: Supabase
+      note: one-click integration
+    - name: Vercel
+      note: deploy target
+sources:
+  - label: Softgen.ai in-depth review (Skywork)
+    url: https://skywork.ai/skypage/en/Softgen.ai-An-In-Depth-2025-Review-of-the-AI-App-Builder/1976103942457716736
+  - label: Softgen Supabase onboarding (academy)
+    url: https://academy.softgen.ai/fullstack/supabase/supabase-onboarding

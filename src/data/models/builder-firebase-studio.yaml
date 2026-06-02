@@ -1,0 +1,21 @@
+vendor: Google
+family: Firebase Studio
+kind: product
+url: https://firebase.google.com/docs/studio
+poweredBy: Gemini (via Genkit)
+order: 13
+blurb: >-
+  Google's App Prototyping agent (formerly Project IDX). The UI stack is fixed
+  and non-modifiable: TypeScript + Next.js + Tailwind, deployed on Firebase.
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+  backend:
+    - name: Firebase
+sources:
+  - label: Firebase Studio tips & tricks (firebase.blog)
+    url: https://firebase.blog/posts/2025/07/studio-tips-tricks-2/
+  - label: Build with AI in Firebase Studio (docs)
+    url: https://firebase.google.com/docs/studio/solution-build-with-ai

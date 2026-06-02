@@ -1,0 +1,25 @@
+vendor: Cline Bot
+family: Cline
+kind: agent
+poweredBy: Bring your own model (often Claude Sonnet)
+url: https://cline.bot
+order: 36
+blurb: >-
+  Open-source VS Code agent. Prompt-driven and bring-your-own-model across 30+
+  providers; it builds whatever the task asks for rather than defaulting a stack.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Cline guide (DeployHQ)
+    url: https://www.deployhq.com/guides/cline
+  - label: Cline (GitHub)
+    url: https://github.com/cline/cline

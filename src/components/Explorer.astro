@@ -5,6 +5,8 @@ import {
 	tallyDimension,
 	DIMENSIONS,
 	STATUS_LABEL,
+	KIND_LABEL,
+	NONCOMMITTAL,
 	type Version,
 } from '../lib/models';
 
@@ -12,8 +14,8 @@ const models = await getModels();
 const total = models.length;
 
 const tallies = DIMENSIONS.map((d) => {
-	const all = tallyDimension(models, d.key);
-	return { ...d, top: all[0], all };
+	const t = tallyDimension(models, d.key);
+	return { ...d, top: t.choices[0], documented: t.documented };
 });
 
 // A synthetic single "version" for families (products) that don't list any.
@@ -73,7 +75,7 @@ function choiceList(m: (typeof models)[number]): string {
 						/>
 					</span>
 					<span class="frac">
-						{t.top?.count ?? 0}/{total} families
+						{t.top?.count ?? 0} of {t.documented} with a default
 					</span>
 				</li>
 			))
@@ -92,7 +94,8 @@ function choiceList(m: (typeof models)[number]): string {
 		<div class="seg" role="group" aria-label="Filter by kind" data-kind>
 			<button type="button" data-kind-btn="all" class="active">All</button>
 			<button type="button" data-kind-btn="model">Models</button>
-			<button type="button" data-kind-btn="product">Products</button>
+			<button type="button" data-kind-btn="product">Builders</button>
+			<button type="button" data-kind-btn="agent">Agents</button>
 		</div>
 		<div class="seg" role="group" aria-label="View" data-view>
 			<button type="button" data-view-btn="cards" class="active">Cards</button>
@@ -135,11 +138,16 @@ function choiceList(m: (typeof models)[number]): string {
 								</h3>
 							</div>
 							<span class={`kind kind-${m.data.kind}`}>
-								{m.data.kind === 'product' ? 'Product' : 'Model'}
+								{KIND_LABEL[m.data.kind]}
 							</span>
 						</header>
 
 						{m.data.blurb && <p class="blurb">{m.data.blurb}</p>}
+						{m.data.poweredBy && (
+							<p class="powered">
+								Powered by <span>{m.data.poweredBy}</span>
+							</p>
+						)}
 
 						<div class="version-row">
 							{versions.length > 1 ? (
@@ -170,17 +178,21 @@ function choiceList(m: (typeof models)[number]): string {
 								<div class="dim">
 									<dt>{d.label}</dt>
 									<dd data-dim={d.key}>
-										{stack[d.key].map((c) => (
-											<button
-												type="button"
-												class="chip"
-												data-choice={c.name}
-												title={`Filter by ${c.name}`}
-											>
-												{c.name}
-												{c.note && <em class="chip-note">{c.note}</em>}
-											</button>
-										))}
+										{stack[d.key].length ? (
+											stack[d.key].map((c) => (
+												<button
+													type="button"
+													class={`chip${NONCOMMITTAL.has(c.name) ? ' chip-soft' : ''}`}
+													data-choice={c.name}
+													title={`Filter by ${c.name}`}
+												>
+													{c.name}
+													{c.note && <em class="chip-note">{c.note}</em>}
+												</button>
+											))
+										) : (
+											<span class="chip-empty">Not documented</span>
+										)}
 									</dd>
 								</div>
 							))}
@@ -232,11 +244,19 @@ function choiceList(m: (typeof models)[number]): string {
 								</th>
 								{DIMENSIONS.map((d) => (
 									<td>
-										{stack[d.key].map((c) => (
-											<button type="button" class="chip" data-choice={c.name}>
-												{c.name}
-											</button>
-										))}
+										{stack[d.key].length ? (
+											stack[d.key].map((c) => (
+												<button
+													type="button"
+													class={`chip${NONCOMMITTAL.has(c.name) ? ' chip-soft' : ''}`}
+													data-choice={c.name}
+												>
+													{c.name}
+												</button>
+											))
+										) : (
+											<span class="chip-empty">—</span>
+										)}
 									</td>
 								))}
 							</tr>
@@ -268,6 +288,8 @@ function choiceList(m: (typeof models)[number]): string {
 		previous: 'Previous',
 		legacy: 'Legacy',
 	};
+
+	const SOFT = new Set(['Mirrors project', 'Varies', 'Flexible']);
 
 	function init(root: HTMLElement) {
 		const dataEl = root.querySelector<HTMLScriptElement>(
@@ -304,7 +326,8 @@ function choiceList(m: (typeof models)[number]): string {
 			);
 
 		function chipHtml(c: Choice) {
-			return `<button type="button" class="chip" data-choice="${esc(
+			const soft = SOFT.has(c.name) ? ' chip-soft' : '';
+			return `<button type="button" class="chip${soft}" data-choice="${esc(
 				c.name,
 			)}" title="Filter by ${esc(c.name)}">${esc(c.name)}${
 				c.note ? `<em class="chip-note">${esc(c.note)}</em>` : ''
@@ -408,7 +431,11 @@ function choiceList(m: (typeof models)[number]): string {
 				}
 				for (const dim of Object.keys(v.stack)) {
 					const dd = card.querySelector<HTMLElement>(`[data-dim="${dim}"]`);
-					if (dd) dd.innerHTML = (v.stack[dim] || []).map(chipHtml).join('');
+					if (!dd) continue;
+					const arr = v.stack[dim] || [];
+					dd.innerHTML = arr.length
+						? arr.map(chipHtml).join('')
+						: '<span class="chip-empty">Not documented</span>';
 				}
 				apply();
 			});
@@ -601,11 +628,24 @@ function choiceList(m: (typeof models)[number]): string {
 		border-color: var(--sl-color-accent);
 		color: var(--sl-color-accent-high);
 	}
+	.kind-agent {
+		border-color: var(--sl-color-purple, #8b5cf6);
+		color: var(--sl-color-purple-high, #a78bfa);
+	}
 	.blurb {
 		font-size: 0.85rem;
 		color: var(--sl-color-gray-2);
 		margin: 0.6rem 0 0.4rem;
 		line-height: 1.45;
+	}
+	.powered {
+		font-size: 0.74rem;
+		color: var(--sl-color-gray-3);
+		margin: 0 0 0.2rem;
+	}
+	.powered span {
+		color: var(--sl-color-gray-1);
+		font-weight: 600;
 	}
 
 	.version-row {
@@ -715,6 +755,16 @@ function choiceList(m: (typeof models)[number]): string {
 		font-style: normal;
 		font-size: 0.68rem;
 		opacity: 0.7;
+	}
+	.chip-soft {
+		background: transparent;
+		color: var(--sl-color-gray-2);
+		border-style: dashed;
+	}
+	.chip-empty {
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-4);
+		font-style: italic;
 	}
 
 	.card-foot {

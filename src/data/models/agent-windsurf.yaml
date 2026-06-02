@@ -1,0 +1,26 @@
+vendor: Cognition
+family: Windsurf
+kind: agent
+poweredBy: SWE-1.6 (Cognition)
+url: https://windsurf.com
+order: 32
+blurb: >-
+  Agentic IDE (formerly Codeium; acquired by Cognition in 2025). Its Cascade
+  agent and Memories system adapt to your project's conventions over time rather
+  than imposing a default stack.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Windsurf Wave 13 / SWE-1.5 (Neowin)
+    url: https://www.neowin.net/news/windsurf-wave-13-introduces-the-new-swe-15-model-and-git-worktrees/
+  - label: Cascade models (Windsurf docs)
+    url: https://docs.windsurf.com/plugins/cascade/models

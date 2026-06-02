@@ -1,0 +1,23 @@
+vendor: Wix
+family: Base44
+kind: product
+url: https://base44.com
+order: 17
+blurb: >-
+  Acquired by Wix in 2025. Generates a React + Tailwind frontend on a fully
+  proprietary, managed backend — no external Supabase/Firebase by default; the
+  DB, auth and storage stay in Base44's cloud.
+defaultStack:
+  framework:
+    - name: React
+      note: bundler not documented
+  styling:
+    - name: Tailwind
+  backend:
+    - name: Base44 (built-in)
+      note: proprietary managed DB/auth/storage
+sources:
+  - label: Base44 review 2026 (WeavAI)
+    url: https://weavai.app/blog/en/2026/05/08/base44-review-2026-wix-80m-ai-app-builder-pricing/
+  - label: What AI app builders use under the hood (Webtwizz)
+    url: https://webtwizz.com/blog/what-ai-app-builders-actually-use-under-the-hood

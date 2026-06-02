@@ -1,0 +1,26 @@
+vendor: Cognition
+family: Devin
+kind: agent
+poweredBy: Cognition (proprietary)
+url: https://devin.ai
+order: 34
+blurb: >-
+  Autonomous software engineer. It indexes your repository and is steered to
+  follow existing patterns ("mirror this structure"), so it adopts the project's
+  stack rather than imposing one.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Devin repo setup (docs)
+    url: https://docs.devin.ai/onboard-devin/repo-setup
+  - label: How Cognition uses Devin to build Devin
+    url: https://nader.substack.com/p/how-cognition-uses-devin-to-build

@@ -1,0 +1,16 @@
+vendor: Create
+family: Create
+kind: product
+url: https://www.create.xyz
+order: 18
+blurb: >-
+  Text-to-app "creative maker" tool (rebranding toward "Anything"). Exports
+  React / Next.js projects; its styling and backend specifics aren't publicly
+  documented.
+defaultStack:
+  framework:
+    - name: Next.js
+      note: React
+sources:
+  - label: Create.xyz FAQ (docs)
+    url: https://www.create.xyz/docs/faq

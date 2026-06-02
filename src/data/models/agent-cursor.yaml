@@ -1,0 +1,26 @@
+vendor: Anysphere
+family: Cursor
+kind: agent
+poweredBy: Composer 2.5 (default); Claude/GPT selectable
+url: https://cursor.com
+order: 31
+blurb: >-
+  AI code editor. It adapts to your existing project and conventions (via
+  .cursorrules and @-references) rather than imposing a stack — there's no
+  documented greenfield default.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Cursor Composer 2.5 (blog)
+    url: https://cursor.com/blog/composer-2-5
+  - label: Cursor vs Windsurf 2026 (review)
+    url: https://tech-insider.org/cursor-vs-windsurf-2026/

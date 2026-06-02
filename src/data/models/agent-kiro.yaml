@@ -1,0 +1,19 @@
+vendor: AWS
+family: Kiro
+kind: agent
+url: https://kiro.dev
+order: 30
+blurb: >-
+  AWS's spec-driven agentic IDE. Unusually for a coding agent, its project-init
+  prompt ships documented defaults — a React frontend on AWS serverless (Lambda,
+  DynamoDB, S3, API Gateway) when you don't specify otherwise.
+defaultStack:
+  framework:
+    - name: React
+      note: meta-framework not specified
+  backend:
+    - name: AWS
+      note: Lambda, DynamoDB, S3, API Gateway
+sources:
+  - label: Kiro project-init defaults (AWS prompt library)
+    url: https://aws.amazon.com/startups/prompt-library/kiro-project-init

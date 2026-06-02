@@ -1,0 +1,26 @@
+vendor: GitHub
+family: GitHub Copilot
+kind: agent
+poweredBy: Auto (model router)
+url: https://github.com/features/copilot
+order: 33
+blurb: >-
+  GitHub's coding agent works inside an existing repository and opens pull
+  requests — it researches, plans and edits within your project rather than
+  scaffolding a default stack.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: About Copilot coding agent (GitHub docs)
+    url: https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent
+  - label: Changing the AI model (GitHub docs)
+    url: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/changing-the-ai-model

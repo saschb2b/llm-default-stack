@@ -1,0 +1,25 @@
+vendor: Tempo Labs
+family: Tempo
+kind: product
+url: https://www.tempo.new
+order: 15
+blurb: >-
+  Visual React editor plus an agent. Vite + React + Tailwind + shadcn/ui is the
+  core default (its public starter templates), with Supabase as the headline
+  backend integration.
+defaultStack:
+  framework:
+    - name: Vite
+      note: React/SWC; Next.js starters too
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  backend:
+    - name: Supabase
+      note: Convex/Clerk starter variants exist
+sources:
+  - label: Tempo Labs starter templates (GitHub)
+    url: https://github.com/TempoLabsAI
+  - label: Tempo + Supabase integration
+    url: https://www.tempo.new/blog/tempo-supabase-integration

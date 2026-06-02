@@ -1,0 +1,26 @@
+vendor: Google
+family: Jules
+kind: agent
+poweredBy: Gemini 3 Pro
+url: https://jules.google
+order: 35
+blurb: >-
+  Google's asynchronous coding agent. It clones your GitHub repo into an
+  isolated VM, edits files and runs the project's tests, then returns a pull
+  request — working within your existing stack.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Introducing Jules (Google blog)
+    url: https://blog.google/innovation-and-ai/models-and-research/google-labs/jules/
+  - label: Jules on Gemini 3 (Google Developers blog)
+    url: https://developers.googleblog.com/jules-gemini-3/
