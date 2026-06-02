@@ -11,7 +11,6 @@ import {
 } from '../lib/models';
 
 const models = await getModels();
-const total = models.length;
 const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
 const detailHref = (id: string) => `${base}/models/${id}/`;
 
@@ -25,23 +24,6 @@ function versionsOf(m: (typeof models)[number]): Version[] {
 	if (m.data.versions.length) return m.data.versions;
 	return [{ name: m.data.family, status: 'current', sources: [] } as Version];
 }
-
-// Per-family, per-version resolved stacks, embedded for client-side version
-// switching. Most versions inherit the family default; overrides flow through
-// resolveStack().
-const explorerData = Object.fromEntries(
-	models.map((m) => [
-		m.id,
-		versionsOf(m).map((v) => ({
-			name: v.name,
-			date: v.releaseDate ?? null,
-			status: v.status ?? 'current',
-			notes: v.notes ?? null,
-			stack: resolveStack(m, m.data.versions.length ? v : undefined),
-		})),
-	]),
-);
-const explorerJson = JSON.stringify(explorerData).replace(/</g, '\\u003c');
 
 function haystack(m: (typeof models)[number]): string {
 	return [
@@ -114,9 +96,9 @@ function choiceList(m: (typeof models)[number]): string {
 	<div class="cards" data-cards>
 		{
 			models.map((m) => {
-				const versions = versionsOf(m);
-				const v0 = versions[0];
-				const stack = resolveStack(m, m.data.versions.length ? v0 : undefined);
+				const current = versionsOf(m)[0];
+				const stack = resolveStack(m);
+				const versionCount = m.data.versions.length;
 				return (
 					<article
 						class="card"
@@ -145,29 +127,17 @@ function choiceList(m: (typeof models)[number]): string {
 							</p>
 						)}
 
-						<div class="version-row">
-							{versions.length > 1 ? (
-								<label class="version-pick">
-									<span>Version</span>
-									<select data-version aria-label={`${m.data.family} version`}>
-										{versions.map((v, i) => (
-											<option value={i}>{v.name}</option>
-										))}
-									</select>
-								</label>
-							) : (
-								<span class="version-single">{v0.name}</span>
-							)}
-							<span class="version-meta" data-version-meta>
-								<span class={`status status-${v0.status}`}>
-									{STATUS_LABEL[v0.status]}
+						{current.releaseDate || m.data.kind === 'model' ? (
+							<p class="card-version">
+								<span class={`status status-${current.status}`}>
+									{STATUS_LABEL[current.status]}
 								</span>
-								{v0.releaseDate && <span class="date">{v0.releaseDate}</span>}
-							</span>
-						</div>
-						<p class="version-notes" data-version-notes hidden={!v0.notes}>
-							{v0.notes}
-						</p>
+								<span class="vname">{current.name}</span>
+								{current.releaseDate && (
+									<span class="date">{current.releaseDate}</span>
+								)}
+							</p>
+						) : null}
 
 						<dl class="dims">
 							{DIMENSIONS.map((d) => (
@@ -180,10 +150,13 @@ function choiceList(m: (typeof models)[number]): string {
 													type="button"
 													class={`chip${NONCOMMITTAL.has(c.name) ? ' chip-soft' : ''}`}
 													data-choice={c.name}
-													title={`Filter by ${c.name}`}
+													title={
+														c.note
+															? `${c.name} — ${c.note}`
+															: `Filter by ${c.name}`
+													}
 												>
 													{c.name}
-													{c.note && <em class="chip-note">{c.note}</em>}
 												</button>
 											))
 										) : (
@@ -194,20 +167,14 @@ function choiceList(m: (typeof models)[number]): string {
 							))}
 						</dl>
 
-						{m.data.sources.length > 0 && (
-							<footer class="card-foot">
-								<span>Source:</span>
-								{m.data.sources.map((s) =>
-									s.url ? (
-										<a href={s.url} target="_blank" rel="noopener">
-											{s.label}
-										</a>
-									) : (
-										<span>{s.label}</span>
-									),
-								)}
-							</footer>
-						)}
+						<footer class="card-foot">
+							<a class="details-link" href={detailHref(m.id)}>
+								{versionCount > 1
+									? `Details · ${versionCount} versions`
+									: 'Details & sources'}
+								<span aria-hidden="true"> →</span>
+							</a>
+						</footer>
 					</article>
 				);
 			})
@@ -264,42 +231,10 @@ function choiceList(m: (typeof models)[number]): string {
 	</div>
 
 	<p class="empty" data-empty hidden>No models match those filters.</p>
-
-	<script is:inline type="application/json" data-explorer-json set:html={explorerJson} />
 </div>
 
 <script>
-	type Choice = { name: string; note?: string };
-	type Ver = {
-		name: string;
-		date: string | null;
-		status: string;
-		notes: string | null;
-		stack: Record<string, Choice[]>;
-	};
-
-	const STATUS_LABEL: Record<string, string> = {
-		current: 'Current',
-		preview: 'Preview',
-		previous: 'Previous',
-		legacy: 'Legacy',
-	};
-
-	const SOFT = new Set([
-		'Mirrors project',
-		'Varies',
-		'Flexible',
-		'User-selected',
-	]);
-
 	function init(root: HTMLElement) {
-		const dataEl = root.querySelector<HTMLScriptElement>(
-			'[data-explorer-json]',
-		);
-		const data: Record<string, Ver[]> = dataEl
-			? JSON.parse(dataEl.textContent || '{}')
-			: {};
-
 		const cards = [...root.querySelectorAll<HTMLElement>('[data-card]')];
 		const rows = [...root.querySelectorAll<HTMLElement>('[data-row]')];
 		const searchEl = root.querySelector<HTMLInputElement>('[data-search]');
@@ -312,28 +247,6 @@ function choiceList(m: (typeof models)[number]): string {
 		const filterLabel = root.querySelector<HTMLElement>('[data-filter-label]');
 
 		const state = { q: '', kind: 'all', choice: '', view: 'cards' };
-
-		const esc = (s: string) =>
-			s.replace(
-				/[&<>"']/g,
-				(c) =>
-					({
-						'&': '&amp;',
-						'<': '&lt;',
-						'>': '&gt;',
-						'"': '&quot;',
-						"'": '&#39;',
-					})[c]!,
-			);
-
-		function chipHtml(c: Choice) {
-			const soft = SOFT.has(c.name) ? ' chip-soft' : '';
-			return `<button type="button" class="chip${soft}" data-choice="${esc(
-				c.name,
-			)}" title="Filter by ${esc(c.name)}">${esc(c.name)}${
-				c.note ? `<em class="chip-note">${esc(c.note)}</em>` : ''
-			}</button>`;
-		}
 
 		function apply() {
 			const items = state.view === 'matrix' ? rows : cards;
@@ -402,44 +315,12 @@ function choiceList(m: (typeof models)[number]): string {
 			.querySelector('[data-clear-filter]')
 			?.addEventListener('click', () => setChoice(state.choice));
 
-		// Chip clicks (delegated, survives version re-render)
+		// Chip clicks (delegated)
 		root.addEventListener('click', (e) => {
 			const chip = (e.target as HTMLElement).closest<HTMLElement>(
 				'.chip[data-choice]',
 			);
 			if (chip && root.contains(chip)) setChoice(chip.dataset.choice!);
-		});
-
-		// Version switching
-		root.querySelectorAll<HTMLSelectElement>('[data-version]').forEach((sel) => {
-			const card = sel.closest<HTMLElement>('[data-card]');
-			if (!card) return;
-			const versions = data[card.dataset.id!] || [];
-			sel.addEventListener('change', () => {
-				const v = versions[sel.selectedIndex];
-				if (!v) return;
-				const meta = card.querySelector<HTMLElement>('[data-version-meta]');
-				if (meta) {
-					meta.innerHTML =
-						`<span class="status status-${esc(v.status)}">${esc(
-							STATUS_LABEL[v.status] || v.status,
-						)}</span>` + (v.date ? `<span class="date">${esc(v.date)}</span>` : '');
-				}
-				const notes = card.querySelector<HTMLElement>('[data-version-notes]');
-				if (notes) {
-					notes.textContent = v.notes || '';
-					notes.toggleAttribute('hidden', !v.notes);
-				}
-				for (const dim of Object.keys(v.stack)) {
-					const dd = card.querySelector<HTMLElement>(`[data-dim="${dim}"]`);
-					if (!dd) continue;
-					const arr = v.stack[dim] || [];
-					dd.innerHTML = arr.length
-						? arr.map(chipHtml).join('')
-						: '<span class="chip-empty">Not documented</span>';
-				}
-				apply();
-			});
 		});
 
 		apply();
@@ -649,40 +530,18 @@ function choiceList(m: (typeof models)[number]): string {
 		font-weight: 600;
 	}
 
-	.version-row {
+	.card-version {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.5rem;
 		margin: 0.5rem 0 0;
-	}
-	.version-pick {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-size: 0.8rem;
+		font-size: 0.78rem;
 		color: var(--sl-color-gray-3);
 	}
-	.version-pick select {
-		font: inherit;
-		font-size: 0.82rem;
-		padding: 0.25rem 0.4rem;
-		border-radius: 0.4rem;
-		border: 1px solid var(--sl-color-gray-5);
-		background: var(--sl-color-black);
-		color: var(--sl-color-white);
-	}
-	.version-single {
-		font-size: 0.85rem;
+	.card-version .vname {
 		font-weight: 600;
 		color: var(--sl-color-white);
-	}
-	.version-meta {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-size: 0.72rem;
-		color: var(--sl-color-gray-3);
 	}
 	.explorer :global(.status) {
 		padding: 0.1rem 0.45rem;
@@ -698,13 +557,6 @@ function choiceList(m: (typeof models)[number]): string {
 		border-color: var(--sl-color-orange, #c2740c);
 		color: var(--sl-color-orange-high, #e8920c);
 	}
-	.version-notes {
-		font-size: 0.78rem;
-		color: var(--sl-color-gray-3);
-		font-style: italic;
-		margin: 0.45rem 0 0;
-	}
-
 	.dims {
 		margin: 0.85rem 0 0;
 		display: grid;
@@ -729,10 +581,9 @@ function choiceList(m: (typeof models)[number]): string {
 		gap: 0.35rem;
 	}
 
-	/* Chips and the version badge are also injected client-side (innerHTML) on
-	   version switch, so they don't carry Astro's scope attribute. Namespace
-	   these rules under the (scoped) .explorer root via :global() so they apply
-	   to both server-rendered and JS-injected elements. */
+	/* Chip and status-badge styles, namespaced under the (scoped) .explorer
+	   root via :global() so they're robust regardless of how the element is
+	   produced. */
 	.explorer :global(.chip) {
 		font: inherit;
 		font-size: 0.78rem;
@@ -756,11 +607,6 @@ function choiceList(m: (typeof models)[number]): string {
 		border-color: var(--sl-color-accent);
 		color: var(--sl-color-white);
 	}
-	.explorer :global(.chip-note) {
-		font-style: normal;
-		font-size: 0.68rem;
-		opacity: 0.7;
-	}
 	.explorer :global(.chip-soft) {
 		background: transparent;
 		color: var(--sl-color-gray-2);
@@ -773,14 +619,18 @@ function choiceList(m: (typeof models)[number]): string {
 	}
 
 	.card-foot {
-		margin-top: 0.85rem;
-		padding-top: 0.6rem;
-		border-top: 1px solid var(--sl-color-gray-6);
-		font-size: 0.72rem;
-		color: var(--sl-color-gray-3);
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.35rem;
+		margin-top: auto;
+		padding-top: 0.75rem;
+	}
+	.details-link {
+		display: inline-block;
+		font-size: 0.82rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--sl-color-accent-high);
+	}
+	.details-link:hover {
+		text-decoration: underline;
 	}
 
 	/* Matrix */
