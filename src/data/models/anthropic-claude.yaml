@@ -44,8 +44,7 @@ emits:
   - name: Zod
     version: '3'
     note: self-reported from memory; Zod 4 has been out since mid-2025
-# Modern-practice checklist, measured in a bare-prompt probe of Opus 4.8 (a touch
-# more modern than its own hedged self-report — the code commits fully).
+# Modern-practice checklist, measured across two bare-prompt probes of Opus 4.8.
 checklist:
   - id: app-router
     status: adopted
@@ -56,8 +55,10 @@ checklist:
     status: adopted
     note: login / logout / addTodo as Server Actions
   - id: react-compiler
-    status: missing
-    note: not enabled (no compiler dep/config); no memoization needed here
+    status: partial
+    note: >-
+      varies by run — one probe ignored it; another set experimental.reactCompiler
+      but omitted babel-plugin-react-compiler, so the compiler still wouldn't run
   - id: ref-as-prop
     status: adopted
     note: reusable Input takes ref as a prop, no forwardRef
@@ -72,6 +73,7 @@ checklist:
     note: '@import "tailwindcss" + @theme, no JS config'
   - id: ts-strict
     status: adopted
+    note: 'verified — tsconfig strict: true'
 versions:
   - name: Claude Opus 4.8
     releaseDate: '2026-05-28'
@@ -89,6 +91,6 @@ versions:
     releaseDate: '2024-06'
     status: legacy
 sources:
-  - label: Bare-prompt probe run (Opus 4.8), June 2026
+  - label: Bare-prompt probe runs (Opus 4.8, two runs), June 2026
   - label: Six Models, One React Stack
     url: https://www.saschb2b.com/blog/llm-default-react-stack
