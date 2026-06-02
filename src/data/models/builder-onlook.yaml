@@ -1,0 +1,17 @@
+vendor: Onlook
+family: Onlook
+kind: product
+url: https://onlook.com
+order: 26
+blurb: >-
+  Open-source "Cursor for designers" that edits real .tsx/.css on disk. New
+  projects default to Next.js + Tailwind (it can also operate on existing projects
+  in other frameworks).
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+sources:
+  - label: Onlook (GitHub README)
+    url: https://github.com/onlook-dev/onlook/blob/main/README.md

@@ -1,0 +1,22 @@
+vendor: Magic Patterns
+family: Magic Patterns
+kind: product
+url: https://www.magicpatterns.com
+order: 25
+blurb: >-
+  AI prototyping tool (YC S23). Default output is React + Tailwind; the component
+  library is selectable (shadcn, MUI, Chakra, Mantine, or your own). Export-oriented,
+  with no bundled backend.
+defaultStack:
+  framework:
+    - name: React
+  styling:
+    - name: Tailwind
+  components:
+    - name: User-selected
+      note: shadcn / MUI / Chakra / custom
+sources:
+  - label: Magic Patterns (homepage / llms.txt)
+    url: https://www.magicpatterns.com/docs/llms.txt
+  - label: Open-source React component libraries (Magic Patterns blog)
+    url: https://www.magicpatterns.com/blog/top-open-source-react-component-libraries-2025

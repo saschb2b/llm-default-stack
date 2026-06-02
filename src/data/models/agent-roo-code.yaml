@@ -1,0 +1,26 @@
+vendor: Roo Code
+family: Roo Code
+kind: agent
+poweredBy: Bring your own model (provider-agnostic)
+url: https://github.com/RooCodeInc/Roo-Code
+order: 45
+blurb: >-
+  Open-source VS Code agent (a community fork of Cline) with file-system access
+  and terminal control. Provider-agnostic by design — no default model — and it
+  works within your project.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Roo Code (docs)
+    url: https://roocodeinc.github.io/Roo-Code/
+  - label: Roo Code (GitHub)
+    url: https://github.com/RooCodeInc/Roo-Code

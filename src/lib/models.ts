@@ -49,7 +49,12 @@ export const KIND_LABEL: Record<ModelEntry['data']['kind'], string> = {
  * convergence numerator/denominator so the "what's the dominant default"
  * counts stay meaningful.
  */
-export const NONCOMMITTAL = new Set(['Mirrors project', 'Varies', 'Flexible']);
+export const NONCOMMITTAL = new Set([
+	'Mirrors project',
+	'Varies',
+	'Flexible',
+	'User-selected',
+]);
 
 /** Load all model families, sorted by `order` then family name. */
 export async function getModels(): Promise<ModelEntry[]> {

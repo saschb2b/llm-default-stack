@@ -1,0 +1,26 @@
+vendor: Augment Code
+family: Augment Code
+kind: agent
+poweredBy: GPT-5.4 (default; switchable)
+url: https://www.augmentcode.com
+order: 43
+blurb: >-
+  Agent across IDE extensions and the Auggie CLI, built for large existing
+  codebases. It creates, edits and deletes code across your workspace rather than
+  imposing a stack.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: GPT-5.4 is now the default model in Augment (changelog)
+    url: https://www.augmentcode.com/changelog/gpt-5-4-is-now-the-default-model-in-augment
+  - label: Augment Agent (docs)
+    url: https://docs.augmentcode.com/using-augment/agent

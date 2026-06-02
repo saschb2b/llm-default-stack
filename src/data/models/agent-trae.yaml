@@ -1,0 +1,26 @@
+vendor: ByteDance
+family: Trae
+kind: agent
+poweredBy: Built-in multi-model (no single default)
+url: https://www.trae.ai
+order: 46
+blurb: >-
+  ByteDance's AI-native IDE (VS Code-based) with a built-in agent. It edits files
+  and runs commands in your project; ships built-in access to several frontier
+  models, with no single documented default.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Trae IDE agent (docs)
+    url: https://docs.trae.ai/ide/agent
+  - label: trae-agent (GitHub)
+    url: https://github.com/bytedance/trae-agent

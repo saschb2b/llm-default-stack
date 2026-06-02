@@ -1,0 +1,26 @@
+vendor: OpenAI
+family: Codex CLI
+kind: agent
+poweredBy: GPT-5.5 (default)
+url: https://developers.openai.com/codex/cli
+order: 40
+blurb: >-
+  OpenAI's local coding agent. It reads, changes and runs code in your selected
+  directory rather than scaffolding a default stack; the default model depends on
+  how you authenticate.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Codex CLI (docs)
+    url: https://developers.openai.com/codex/cli
+  - label: Codex models (docs)
+    url: https://developers.openai.com/codex/models

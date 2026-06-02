@@ -289,7 +289,12 @@ function choiceList(m: (typeof models)[number]): string {
 		legacy: 'Legacy',
 	};
 
-	const SOFT = new Set(['Mirrors project', 'Varies', 'Flexible']);
+	const SOFT = new Set([
+		'Mirrors project',
+		'Varies',
+		'Flexible',
+		'User-selected',
+	]);
 
 	function init(root: HTMLElement) {
 		const dataEl = root.querySelector<HTMLScriptElement>(

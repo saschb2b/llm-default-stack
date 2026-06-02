@@ -1,0 +1,22 @@
+vendor: Bind AI
+family: Bind AI
+kind: product
+poweredBy: Multi-model (GPT / Claude / Gemini)
+url: https://getbind.co
+order: 28
+blurb: >-
+  Cloud IDE that, in its documented React walkthrough, scaffolds Next.js (App
+  Router) + Tailwind with one-click deploy to Vercel. Prompt-driven, so the stack
+  is its default rather than a hard rule.
+defaultStack:
+  framework:
+    - name: Next.js
+      note: App Router
+  styling:
+    - name: Tailwind
+  backend:
+    - name: Vercel
+      note: deploy; Next.js API routes
+sources:
+  - label: Create a Next.js application with Bind AI (blog)
+    url: https://blog.getbind.co/2025/07/31/how-to-create-a-next-js-application-with-bind-ai/

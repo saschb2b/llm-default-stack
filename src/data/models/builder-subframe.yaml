@@ -1,0 +1,23 @@
+vendor: Subframe
+family: Subframe
+kind: product
+url: https://www.subframe.com
+order: 22
+blurb: >-
+  Design-to-code tool that generates pixel-perfect React + Tailwind, synced into
+  your own repo. Its components are Subframe's own Radix-based design system, not
+  shadcn/ui.
+defaultStack:
+  framework:
+    - name: React
+      note: any TypeScript + React framework
+  styling:
+    - name: Tailwind
+  components:
+    - name: Custom
+      note: Subframe design system on Radix
+sources:
+  - label: Subframe (homepage)
+    url: https://www.subframe.com/
+  - label: '@subframe/core (GitHub)'
+    url: https://github.com/SubframeApp/subframe/blob/main/README.md

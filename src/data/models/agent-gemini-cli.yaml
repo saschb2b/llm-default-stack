@@ -1,0 +1,26 @@
+vendor: Google
+family: Gemini CLI
+kind: agent
+poweredBy: Gemini (Auto — selects Gemini 3 / 2.5)
+url: https://github.com/google-gemini/gemini-cli
+order: 41
+blurb: >-
+  Google's open-source terminal agent. It queries and edits the codebase in your
+  current directory rather than imposing a stack; "Auto" mode picks a Gemini model
+  per task.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Gemini CLI (GitHub)
+    url: https://github.com/google-gemini/gemini-cli
+  - label: Gemini CLI model selection (docs)
+    url: https://geminicli.com/docs/cli/model/

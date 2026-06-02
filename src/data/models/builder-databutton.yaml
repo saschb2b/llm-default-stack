@@ -1,0 +1,19 @@
+vendor: Databutton
+family: Databutton
+kind: product
+url: https://databutton.com
+order: 27
+blurb: >-
+  Full-stack app builder with a distinctive non-JS backend — its official export
+  template pairs a React + Vite + React Router frontend with a Python/FastAPI
+  backend. Styling and component choices aren't documented in the canonical template.
+defaultStack:
+  framework:
+    - name: Vite
+      note: React + TypeScript, React Router
+  backend:
+    - name: FastAPI (Python)
+      note: proprietary; not Supabase/Firebase
+sources:
+  - label: databutton/react-fastapi export template (GitHub)
+    url: https://github.com/databutton/react-fastapi

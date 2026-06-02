@@ -1,0 +1,24 @@
+vendor: Plasmic
+family: Plasmic
+kind: product
+url: https://www.plasmic.app
+order: 24
+blurb: >-
+  Visual builder for React, and a rare counter-example to the monoculture — its
+  codegen defaults to plain CSS (not Tailwind) and its own generated presentational
+  components rather than shadcn/ui.
+defaultStack:
+  framework:
+    - name: React
+      note: codegen targets Next.js / Gatsby / Vite
+  styling:
+    - name: Plain CSS
+      note: CSS Modules optional
+  components:
+    - name: Custom
+      note: Plasmic's own generated components
+sources:
+  - label: Plasmic codegen components (docs)
+    url: https://docs.plasmic.app/learn/codegen-components/
+  - label: plasmic.json default style scheme (docs)
+    url: https://docs.plasmic.app/learn/plasmic-json/

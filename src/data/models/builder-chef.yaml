@@ -1,0 +1,25 @@
+vendor: Convex
+family: Chef
+kind: product
+poweredBy: Claude (multi-model)
+url: https://chef.convex.dev
+order: 21
+blurb: >-
+  Convex's full-stack app builder. Its public generation template is the clearest
+  evidence in the dataset: Vite + React + Tailwind + shadcn/ui, with data flowing
+  through Convex's reactive backend rather than a separate state library.
+defaultStack:
+  framework:
+    - name: Vite
+      note: React 19
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+  backend:
+    - name: Convex
+sources:
+  - label: Lessons from building an AI app builder (Convex Stack)
+    url: https://stack.convex.dev/lessons-from-building-an-ai-app-builder
+  - label: Chef generation template (GitHub)
+    url: https://github.com/get-convex/chef/blob/main/template/package.json

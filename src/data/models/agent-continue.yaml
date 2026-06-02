@@ -1,0 +1,26 @@
+vendor: Continue
+family: Continue
+kind: agent
+poweredBy: Bring your own model (provider-agnostic)
+url: https://www.continue.dev
+order: 44
+blurb: >-
+  Open-source IDE extension (VS Code / JetBrains). Its agent acts on your
+  workspace files, and it's explicitly model-agnostic — you supply the provider,
+  so there's no enforced default model.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Continue agent (docs)
+    url: https://docs.continue.dev/ide-extensions/agent/how-it-works
+  - label: Continue model providers (docs)
+    url: https://docs.continue.dev/customize/model-providers/overview

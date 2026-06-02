@@ -1,0 +1,26 @@
+vendor: Anthropic
+family: Claude Code
+kind: agent
+poweredBy: Claude (Opus 4.8 on most paid tiers)
+url: https://github.com/anthropics/claude-code
+order: 39
+blurb: >-
+  Anthropic's terminal-first agent. It understands and edits your existing
+  codebase through natural-language commands rather than imposing a greenfield
+  stack; the default model varies by plan.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Claude Code (GitHub)
+    url: https://github.com/anthropics/claude-code
+  - label: Claude Code model config (docs)
+    url: https://code.claude.com/docs/en/model-config

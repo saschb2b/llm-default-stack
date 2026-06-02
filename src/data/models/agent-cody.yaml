@@ -1,0 +1,26 @@
+vendor: Sourcegraph
+family: Cody
+kind: agent
+poweredBy: Claude Sonnet 4.5 (default chat model)
+url: https://sourcegraph.com/docs/cody
+order: 42
+blurb: >-
+  Sourcegraph's code assistant. It uses your development context (and Sourcegraph
+  code search) to work within your codebase rather than imposing a stack; the
+  default chat model is configurable.
+defaultStack:
+  framework:
+    - name: Mirrors project
+  styling:
+    - name: Mirrors project
+  components:
+    - name: Mirrors project
+  stateData:
+    - name: Mirrors project
+  backend:
+    - name: Mirrors project
+sources:
+  - label: Cody (docs)
+    url: https://sourcegraph.com/docs/cody
+  - label: Cody supported models (docs)
+    url: https://sourcegraph.com/docs/cody/capabilities/supported-models

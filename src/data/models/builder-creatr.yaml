@@ -1,0 +1,19 @@
+vendor: Creatr
+family: Creatr
+kind: product
+poweredBy: Multi-model (GPT / Claude / Gemini)
+url: https://getcreatr.com
+order: 29
+blurb: >-
+  Prompt-to-app builder that emphasises code ownership (export to GitHub anytime).
+  Consistently described as Next.js + Tailwind with a Supabase backend.
+defaultStack:
+  framework:
+    - name: Next.js
+  styling:
+    - name: Tailwind
+  backend:
+    - name: Supabase
+sources:
+  - label: Creatr (SourceForge listing)
+    url: https://sourceforge.net/software/product/Creatr/

@@ -1,0 +1,20 @@
+vendor: Polymet
+family: Polymet
+kind: product
+url: https://www.polymet.ai
+order: 23
+blurb: >-
+  AI design-and-code tool. Exports a full React project wired up with Tailwind and
+  shadcn/ui components (Vue/Svelte/React Native are on the roadmap, not defaults).
+defaultStack:
+  framework:
+    - name: React
+  styling:
+    - name: Tailwind
+  components:
+    - name: shadcn/ui
+sources:
+  - label: Polymet (There's An AI For That)
+    url: https://theresanaiforthat.com/ai/polymet/
+  - label: Polymet share & export (docs)
+    url: https://docs.polymet.ai/academy/share-export
