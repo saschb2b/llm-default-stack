@@ -19,6 +19,31 @@ which observed defaults across Claude, GPT/Codex, Gemini, Grok, DeepSeek, Qwen, 
 the agent products v0, Lovable, and Bolt. Version names and release dates were then
 checked against public releases as of mid-2026 so the timeline is concrete.
 
+Beyond the article, the dataset has been extended with app builders and coding
+agents, each entry backed by a cited source (linked on its card). The rule for
+additions is **no guessing**: a default is only recorded when a credible source —
+the product's own docs/templates, or a reputable hands-on review — states it. Where
+a dimension isn't documented, it's left blank ("Not documented") rather than
+inferred from what similar tools do. Several raw model families (Mistral, Llama,
+Kimi, GLM, Cohere, Nova, Phi, MiniMax) were researched and **deliberately left out**
+because no source describes the stack they emit by default — being absent is more
+honest than being guessed.
+
+## Three kinds of entry
+
+The explorer tags each family as one of three **kinds**, because they relate to the
+default stack differently:
+
+- **Models** — raw model lines (Claude, GPT, Gemini, …). They emit a default when
+  asked to build something.
+- **Builders** — app/site generators (v0, Lovable, Firebase Studio, …). They
+  *impose* a stack; it's baked into their templates.
+- **Agents** — coding IDEs/agents that work on your repository (Cursor, Windsurf,
+  Devin, …). Most are documented to **mirror the existing project** rather than
+  impose a stack, so their power tells more from the model that drives them
+  (shown as "Powered by …") than from a fixed default. Kiro is the rare agent with
+  a documented greenfield default.
+
 ## How precise is it?
 
 Worth being honest about the grain of the data:
@@ -40,11 +65,14 @@ small, self-contained pull request. The shape:
 ```yaml
 vendor: Anthropic
 family: Claude
-kind: model # 'model' or 'product'
+kind: model # 'model' | 'product' (a builder) | 'agent'
 url: https://www.anthropic.com/claude
+poweredBy: # optional — for builders/agents, the model(s) that drive it
 order: 1 # lower sorts first in the explorer
 blurb: One short sentence on what makes this family's default distinctive.
 defaultStack:
+  # Only list dimensions you can source. Omit a dimension entirely if it isn't
+  # documented — the explorer shows it as "Not documented" rather than a guess.
   framework:
     - name: Next.js
     - name: Vite
