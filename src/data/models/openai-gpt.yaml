@@ -4,22 +4,51 @@ kind: model
 url: https://openai.com
 order: 2
 blurb: >-
-  GPT and the Codex coding line lean Next.js but, more than any other family,
-  mirror whatever the project already uses rather than imposing a default.
+  In a bare chat, GPT-5.5 defaults to a minimal Vite + plain-JavaScript SPA —
+  inline styles, hand-rolled components, manual fetch. Far more conservative than
+  the article's Next.js + Tailwind, which surfaces in agentic use (Codex in a
+  repo) and "production app" framings.
 defaultStack:
   framework:
-    - name: Next.js
+    - name: Vite
+      note: React; bare chat — Codex/agentic surfaces lean Next.js
   styling:
-    - name: Tailwind
-    - name: Plain CSS
-      note: when the project already uses it
+    - name: Inline styles
   components:
-    - name: Mixed
-      note: matches the project's conventions
+    - name: None
+      note: hand-written elements
   stateData:
-    - name: Mirrors project
+    - name: Manual fetch
+      note: useState/useEffect; no data library
   backend:
-    - name: Flexible
+    - name: REST API
+      note: client fetch to a placeholder; picks no specific backend
+# Library versions GPT-5.5 emitted in the bare-prompt probe.
+emits:
+  - name: Vite
+    version: '5'
+    note: Vite 5 — three majors behind 8
+  - name: React
+    version: '18'
+    note: React 18, not 19
+# Modern-practice checklist, read from the generated code (not the self-report).
+# Next.js- and Tailwind-specific items are omitted — GPT used neither here.
+checklist:
+  - id: react-compiler
+    status: missing
+    note: React 18; no memoization at all
+  - id: ref-as-prop
+    status: missing
+    note: the reusable input neither forwards nor accepts a ref
+  - id: form-actions
+    status: missing
+    note: controlled input + onSubmit/preventDefault
+  - id: use-hook
+    status: missing
+    note: data via useEffect + fetch
+  - id: ts-strict
+    status: missing
+    note: scaffolds plain JavaScript, not TypeScript
 versions:
   - name: GPT-5.5
     releaseDate: '2026-05'
@@ -38,5 +67,6 @@ versions:
     releaseDate: '2024-05'
     status: legacy
 sources:
-  - label: Six Models, One React Stack
+  - label: Bare-prompt probe run (GPT-5.5), June 2026
+  - label: 'Six Models, One React Stack (agentic/Codex characterization)'
     url: https://www.saschb2b.com/blog/llm-default-react-stack
