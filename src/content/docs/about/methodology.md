@@ -124,8 +124,48 @@ the convergence counts stay accurate.
 The schema that validates all of this lives in `src/content.config.ts`; `pnpm build`
 (or `pnpm astro sync`) will reject a file that doesn't fit.
 
-## Reproduce it yourself
+## Reproduce it yourself — the probe prompt
 
-The whole thing is falsifiable in five minutes: open a few coding models in
-separate tabs, give each the same bare prompt, and diff the results. If your run
-disagrees with what's here, that's a contribution — open an issue or a PR.
+The whole thing is falsifiable: give a model the same bare prompt and read what it
+builds. To capture a model's *genuine* default — not its aspirational best-practice
+answer — make it **build first with no steering**, then describe what it actually
+wrote. Asking "do you use React Compiler?" cold gets a "yes, best practice"; asking
+"does the code you just wrote use it?" gets the truth.
+
+Run this in a **fresh chat, with default settings** (a custom system prompt or an
+"always use the latest" rule contaminates the default):
+
+````text
+Build a minimal but real React app: a todo list where users sign in, todos load
+from a backend, and a form adds new ones. Use whatever you reach for by default —
+don't ask me anything, don't explain your choices, just write it the way you
+naturally would. Include the complete package.json with exact versions, the main
+page, the add-todo form, and any data-fetching and reusable input component.
+
+Then add a JSON block labelled STACK-REPORT describing exactly what the code above
+uses (report what you wrote, not what's ideal). Use null for anything N/A:
+
+{
+  "framework": "",   "styling": "",   "components": "",
+  "stateData": "",   "backend": "",
+  "versions": { "react": "", "next": "", "vite": "", "tailwind": "" },
+  "checklist": {
+    "react-compiler": "",     // relies on React Compiler, not manual useMemo/useCallback?
+    "ref-as-prop": "",        // ref as a normal prop, no forwardRef?
+    "form-actions": "",       // <form action={fn}> + useActionState, not controlled onSubmit?
+    "use-hook": "",           // uses use() / in-component <title>?
+    "app-router": "",         // Next.js App Router (not Pages Router)?
+    "rsc-default": "",        // Server Components by default, "use client" only at leaves?
+    "server-actions": "",     // mutations via Server Actions, not client fetch to an API route?
+    "tailwind-v4-config": "", // Tailwind v4 CSS-first (@theme/@import), not tailwind.config.js?
+    "ts-strict": ""           // tsconfig strict: true?
+  }
+  // checklist values: "adopted" | "partial" | "missing"
+}
+````
+
+The package.json is the hard evidence for `versions`/`emits`; the generated
+component code is the evidence for the `checklist` (don't fully trust the
+self-report — read the code). Drop the model's full output into an issue or PR and
+it can be turned into a data file. If your run disagrees with what's here, that's a
+contribution.
