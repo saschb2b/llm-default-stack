@@ -4,22 +4,71 @@ kind: model
 url: https://gemini.google.com
 order: 3
 blurb: >-
-  Gemini is the notable Vite holdout among the big closed models, and the one
-  most likely to wire up Google's own backend (Firebase) by default.
+  Gemini 3.5 Flash-Lite scaffolds a thoroughly modern Next.js 15 app — React 19,
+  Tailwind v4 (CSS-first), Server Components, Server Actions, Form Actions,
+  ref-as-prop — adopting nearly every current idiom except React Compiler. A
+  sharp break from the article's Vite + Firebase characterization, and the
+  opposite of GPT-5.5's minimal bare-chat output.
 defaultStack:
   framework:
-    - name: Vite
+    - name: Next.js
+      note: App Router
   styling:
     - name: Tailwind
+      note: v4, CSS-first config
   components:
-    - name: Mixed
-      note: matches the project's conventions
+    - name: None
+      note: hand-written
   stateData:
-    - name: Mirrors project
+    - name: Server Components
+      note: RSC reads + Server Actions + useActionState; no client data library
   backend:
-    - name: Firebase
-    - name: Node.js
+    - name: Next.js Server Actions
+      note: in-memory mock DB; no external BaaS
+# Library versions Gemini 3.5 Flash-Lite emitted in the bare-prompt probe.
+emits:
+  - name: Next.js
+    version: '15'
+    note: one major behind 16
+  - name: React
+    version: '19'
+    note: current
+  - name: Tailwind
+    version: '4'
+    note: current, and the CSS-first config
+# Checklist read from the generated code. Note the react-compiler correction:
+# the self-report claimed "adopted", but there's no compiler dependency/config —
+# the app simply needs no memoization.
+checklist:
+  - id: react-compiler
+    status: missing
+    note: not enabled (no babel-plugin-react-compiler / config); just no memoization
+  - id: ref-as-prop
+    status: adopted
+    note: Input takes ref as a prop, no forwardRef
+  - id: form-actions
+    status: adopted
+    note: useActionState + <form action={fn}>
+  - id: use-hook
+    status: missing
+  - id: app-router
+    status: adopted
+  - id: rsc-default
+    status: adopted
+    note: async Server Component page; "use client" only on the form
+  - id: server-actions
+    status: adopted
+  - id: tailwind-v4-config
+    status: adopted
+    note: '@import "tailwindcss", no tailwind.config.js'
+  - id: ts-strict
+    status: adopted
+    note: TypeScript throughout (tsconfig not in output; Next defaults to strict)
 versions:
+  - name: Gemini 3.5 Flash-Lite
+    releaseDate: '2026-05'
+    status: current
+    notes: The variant tested in the probe.
   - name: Gemini 3.5 Flash
     releaseDate: '2026-05'
     status: current
@@ -36,5 +85,6 @@ versions:
     releaseDate: '2025-03'
     status: legacy
 sources:
-  - label: Six Models, One React Stack
+  - label: Bare-prompt probe run (Gemini 3.5 Flash-Lite), June 2026
+  - label: 'Six Models, One React Stack (Vite/Firebase characterization)'
     url: https://www.saschb2b.com/blog/llm-default-react-stack
