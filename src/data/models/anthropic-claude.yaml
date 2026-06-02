@@ -23,6 +23,14 @@ defaultStack:
   backend:
     - name: Vercel
     - name: Supabase
+# Library versions the current flagship (Opus 4.8) emits by default — the lag.
+emits:
+  - name: Vite
+    version: '7'
+    note: scaffolds Vite 7 although Vite 8 has been stable since March 2026
+  - name: Tailwind
+    version: '4'
+    note: current — Claude is one of the few already on the latest major
 versions:
   - name: Claude Opus 4.8
     releaseDate: '2026-05-28'

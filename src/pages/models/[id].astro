@@ -8,6 +8,13 @@ import {
 	STATUS_LABEL,
 	NONCOMMITTAL,
 } from '../../lib/models';
+import { lagFor } from '../../lib/stack-versions';
+
+function lagLabel(lag: ReturnType<typeof lagFor>): string {
+	if (!lag || lag.majorsBehind == null) return '—';
+	if (lag.majorsBehind === 0) return 'current';
+	return `${lag.majorsBehind} major${lag.majorsBehind > 1 ? 's' : ''} behind`;
+}
 
 export async function getStaticPaths() {
 	const models = await getModels();
@@ -21,9 +28,11 @@ const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
 
 const versions = d.versions;
 const sources = d.sources;
+const emits = d.emits;
 
 // Build the on-page table of contents for the sections we actually render.
 const headings = [{ depth: 2, slug: 'default-stack', text: 'Default stack' }];
+if (emits.length) headings.push({ depth: 2, slug: 'version-lag', text: 'Version lag' });
 if (versions.length) headings.push({ depth: 2, slug: 'versions', text: 'Versions' });
 if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' });
 ---
@@ -79,6 +88,53 @@ if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' }
 			))
 		}
 	</dl>
+
+	{
+		emits.length > 0 && (
+			<>
+				<h2 id="version-lag">Version lag</h2>
+				<p class="note">
+					The library versions {d.family} emits by default, against the latest
+					stable major — the{' '}
+					<a href={`${base}/about/convergence/`}>permanent version lag</a>.
+					Observational; tested on the current flagship.
+				</p>
+				<table class="emits">
+					<thead>
+						<tr>
+							<th>Library</th>
+							<th>Emits</th>
+							<th>Latest</th>
+							<th>Lag</th>
+						</tr>
+					</thead>
+					<tbody>
+						{emits.map((e) => {
+							const lag = lagFor(e.name, e.version);
+							const behind = lag?.majorsBehind ?? null;
+							return (
+								<tr>
+									<th scope="row">{e.name}</th>
+									<td>
+										{e.version}
+										{e.note && <small>{e.note}</small>}
+									</td>
+									<td>{lag ? lag.latest : '—'}</td>
+									<td>
+										<span
+											class={`lag${behind ? ' lag-behind' : behind === 0 ? ' lag-current' : ''}`}
+										>
+											{lagLabel(lag)}
+										</span>
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			</>
+		)
+	}
 
 	{
 		versions.length > 0 && (
@@ -241,8 +297,24 @@ if (sources.length) headings.push({ depth: 2, slug: 'sources', text: 'Sources' }
 		font-size: 0.85rem;
 		color: var(--sl-color-gray-3);
 	}
-	.versions {
+	.versions,
+	.emits {
 		width: 100%;
+	}
+	.emits td small {
+		display: block;
+		font-size: 0.74rem;
+		color: var(--sl-color-gray-3);
+	}
+	.lag {
+		white-space: nowrap;
+	}
+	.lag-current {
+		color: var(--sl-color-green-high, #3ba55d);
+	}
+	.lag-behind {
+		color: var(--sl-color-orange-high, #e8920c);
+		font-weight: 600;
 	}
 	.status {
 		padding: 0.1rem 0.45rem;

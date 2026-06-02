@@ -73,6 +73,21 @@ const models = defineCollection({
 		/** Lower sorts first in the explorer. */
 		order: z.number().default(99),
 		defaultStack: stack,
+		/**
+		 * Library *versions* the current generation emits by default (the
+		 * "version lag"). Observational — only add what's been tested. `name`
+		 * should match the keys in src/lib/stack-versions.ts so the lag against
+		 * the latest release can be computed.
+		 */
+		emits: z
+			.array(
+				z.object({
+					name: z.string(),
+					version: z.string(),
+					note: z.string().optional(),
+				}),
+			)
+			.default([]),
 		versions: z.array(version).default([]),
 		sources: z.array(source).default([]),
 	}),
