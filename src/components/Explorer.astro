@@ -688,17 +688,17 @@ function choiceList(m: (typeof models)[number]): string {
 		font-size: 0.72rem;
 		color: var(--sl-color-gray-3);
 	}
-	.status {
+	.explorer :global(.status) {
 		padding: 0.1rem 0.45rem;
 		border-radius: 1rem;
 		font-size: 0.68rem;
 		border: 1px solid var(--sl-color-gray-5);
 	}
-	.status-current {
+	.explorer :global(.status-current) {
 		border-color: var(--sl-color-accent);
 		color: var(--sl-color-accent-high);
 	}
-	.status-preview {
+	.explorer :global(.status-preview) {
 		border-color: var(--sl-color-orange, #c2740c);
 		color: var(--sl-color-orange-high, #e8920c);
 	}
@@ -733,7 +733,11 @@ function choiceList(m: (typeof models)[number]): string {
 		gap: 0.35rem;
 	}
 
-	.chip {
+	/* Chips and the version badge are also injected client-side (innerHTML) on
+	   version switch, so they don't carry Astro's scope attribute. Namespace
+	   these rules under the (scoped) .explorer root via :global() so they apply
+	   to both server-rendered and JS-injected elements. */
+	.explorer :global(.chip) {
 		font: inherit;
 		font-size: 0.78rem;
 		line-height: 1.2;
@@ -747,26 +751,26 @@ function choiceList(m: (typeof models)[number]): string {
 		align-items: baseline;
 		gap: 0.3rem;
 	}
-	.chip:hover {
+	.explorer :global(.chip:hover) {
 		background: var(--chip-bg-hover);
 		border-color: var(--sl-color-accent);
 	}
-	.chip-active {
+	.explorer :global(.chip-active) {
 		background: var(--sl-color-accent);
 		border-color: var(--sl-color-accent);
 		color: var(--sl-color-white);
 	}
-	.chip-note {
+	.explorer :global(.chip-note) {
 		font-style: normal;
 		font-size: 0.68rem;
 		opacity: 0.7;
 	}
-	.chip-soft {
+	.explorer :global(.chip-soft) {
 		background: transparent;
 		color: var(--sl-color-gray-2);
 		border-style: dashed;
 	}
-	.chip-empty {
+	.explorer :global(.chip-empty) {
 		font-size: 0.78rem;
 		color: var(--sl-color-gray-4);
 		font-style: italic;
