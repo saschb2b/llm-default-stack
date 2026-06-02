@@ -32,6 +32,16 @@ export const LATEST: Record<string, LibInfo> = {
 		released: '2025-01',
 		source: 'https://tailwindcss.com/blog/tailwindcss-v4',
 	},
+	Express: {
+		latest: '5',
+		released: '2025-12',
+		source: 'https://github.com/expressjs/express/releases',
+	},
+	Zod: {
+		latest: '4',
+		released: '2025-05',
+		source: 'https://zod.dev/v4',
+	},
 };
 
 export type Lag = {

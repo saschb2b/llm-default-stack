@@ -38,6 +38,12 @@ emits:
   - name: Vite
     version: '7'
     note: when asked for Vite specifically — one behind 8
+  - name: Express
+    version: '4'
+    note: 'self-reported from memory: "5.x exists but I''d reach for 4 by default"'
+  - name: Zod
+    version: '3'
+    note: self-reported from memory; Zod 4 has been out since mid-2025
 # Modern-practice checklist, measured in a bare-prompt probe of Opus 4.8 (a touch
 # more modern than its own hedged self-report — the code commits fully).
 checklist:

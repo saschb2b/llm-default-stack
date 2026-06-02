@@ -94,6 +94,11 @@ You can read the lag straight off the output. As of mid-2026:
 - **React Compiler** went [stable in October 2025](https://react.dev/learn/react-compiler/introduction)
   and auto-memoizes components, removing most hand-written `useMemo`/`useCallback`.
   Models still reach for manual memoization by default, as if it weren't there.
+- Sometimes the lag is *deliberate*. Asked what it scaffolds, Claude Opus 4.8 says it
+  reaches for **Express 4** by its own admission — "5.x exists but I'd reach for 4 by
+  default" — even though [Express 5](https://github.com/expressjs/express/releases) has
+  been the endorsed release since December 2025. The lag isn't always ignorance; it's
+  habit, encoded in the training data.
 
 So it isn't only version numbers — it's *patterns*. A model defaults to the idioms
 that dominated its training data, so the newer the technique, the longer it takes to
