@@ -12,6 +12,8 @@ import {
 
 const models = await getModels();
 const total = models.length;
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+const detailHref = (id: string) => `${base}/models/${id}/`;
 
 const tallies = DIMENSIONS.map((d) => {
 	const t = tallyDimension(models, d.key);
@@ -128,13 +130,7 @@ function choiceList(m: (typeof models)[number]): string {
 							<div class="title">
 								<span class="vendor">{m.data.vendor}</span>
 								<h3>
-									{m.data.url ? (
-										<a href={m.data.url} target="_blank" rel="noopener">
-											{m.data.family}
-										</a>
-									) : (
-										m.data.family
-									)}
+									<a href={detailHref(m.id)}>{m.data.family}</a>
 								</h3>
 							</div>
 							<span class={`kind kind-${m.data.kind}`}>
@@ -240,7 +236,7 @@ function choiceList(m: (typeof models)[number]): string {
 							>
 								<th scope="row">
 									<span class="vendor">{m.data.vendor}</span>
-									{m.data.family}
+									<a href={detailHref(m.id)}>{m.data.family}</a>
 								</th>
 								{DIMENSIONS.map((d) => (
 									<td>

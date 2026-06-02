@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { modelSidebarGroups } from './src/lib/model-nav.mjs';
 
 // Deployment target.
 // Default is the GitHub Pages *project* site: https://saschb2b.github.io/llm-default-stack/
@@ -39,6 +40,8 @@ export default defineConfig({
 						{ label: 'Methodology & contributing', slug: 'about/methodology' },
 					],
 				},
+				// Browse every family directly, grouped by kind (generated from data).
+				...modelSidebarGroups(),
 			],
 		}),
 	],
