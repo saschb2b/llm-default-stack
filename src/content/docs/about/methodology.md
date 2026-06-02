@@ -54,10 +54,13 @@ Worth being honest about the grain of the data:
   haven't been filled in, because that takes deliberate measurement.
 - **Products don't have public version histories,** so v0, Lovable, and Bolt are
   single entries rather than timelines.
-- **Version-lag (`emits`) is observational.** Which library version a model
-  scaffolds isn't documented anywhere — it has to be tested. So it's filled in
-  only where someone has run it (tested on the current flagship), and the
-  "latest" it's compared against lives in `src/lib/stack-versions.ts`.
+- **Version-lag (`emits`) and the practice `checklist` are observational.** Which
+  library version a model scaffolds, and whether it reaches for current idioms
+  (React Compiler, Server Components, …), isn't documented anywhere — it has to be
+  tested. So they're filled in only where someone has run the model. Claude's
+  checklist is **self-reported by Opus 4.8** (and marked as such); everything else
+  is left unassessed rather than guessed. The "latest" versions and the checklist
+  definitions live in `src/lib/stack-versions.ts` and `src/lib/practices.ts`.
 - **It's a snapshot.** Models ship constantly and the training flywheel keeps
   turning. A default that's true today drifts; corrections are welcome.
 
@@ -95,6 +98,10 @@ emits: # optional — the library *versions* the current flagship scaffolds (the
   - name: Vite # match a key in src/lib/stack-versions.ts to compute the lag
     version: '7'
     note: although Vite 8 shipped in March 2026
+checklist: # optional — modern-practice adoption; id must match src/lib/practices.ts
+  - id: react-compiler
+    status: missing # adopted | partial | missing | unknown
+    note: writes manual useMemo/useCallback
 versions:
   - name: Claude Opus 4.8
     releaseDate: '2026-05-28' # quote it so YAML keeps it a string
