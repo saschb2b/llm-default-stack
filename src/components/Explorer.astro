@@ -345,6 +345,16 @@ function choiceList(m: (typeof models)[number]): string {
 		display: none !important;
 	}
 
+	/* This component renders inside Starlight's `.sl-markdown-content`, whose
+	   prose spacing (`* + *`) adds a top margin to every non-first flow sibling.
+	   That leaks into our flex/grid children — pushing the 2nd card in a row,
+	   the 2nd+ chips, and inactive segmented-control buttons down, which looks
+	   like misaligned cards and unequal buttons. Neutralize it here; the
+	   explicit margins declared later below (same specificity) still win. */
+	.explorer :global(* + *) {
+		margin-top: 0;
+	}
+
 	/* Convergence headline */
 	.convergence {
 		list-style: none;
@@ -398,7 +408,7 @@ function choiceList(m: (typeof models)[number]): string {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.6rem;
-		align-items: center;
+		align-items: stretch;
 		margin-bottom: 0.9rem;
 	}
 	.search {
@@ -424,6 +434,9 @@ function choiceList(m: (typeof models)[number]): string {
 	.seg button {
 		font: inherit;
 		font-size: 0.85rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		padding: 0.45rem 0.8rem;
 		background: var(--sl-color-black);
 		color: var(--sl-color-gray-2);
